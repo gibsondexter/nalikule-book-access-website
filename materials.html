@@ -90,7 +90,7 @@ let semester = localStorage.getItem("semester");
 document.getElementById("title").innerText =
 `📚 ${program} | ${year} | ${semester}`;
 
-   function checkAccessAndLoad() {
+  function checkAccessAndLoad() {
 
     let regNumber = localStorage.getItem("regNumber");
 
@@ -117,7 +117,7 @@ document.getElementById("title").innerText =
 
         // ❌ REJECTED
         if (data.status === "rejected") {
-            alert("Payment rejected. Please try again.");
+            alert("Payment rejected.");
             window.location.href = "payment.html";
             return;
         }
@@ -132,18 +132,13 @@ document.getElementById("title").innerText =
         // ⏳ CHECK EXPIRY
         let expiry = data.expiresAt ? data.expiresAt.toDate() : null;
 
-        if (!expiry) {
+        if (!expiry || now > expiry) {
+            alert("Access expired.");
             window.location.href = "payment.html";
             return;
         }
 
-        if (now > expiry) {
-            alert("Access expired. Please renew payment.");
-            window.location.href = "payment.html";
-            return;
-        }
-
-        // ✔ SUCCESS → LOAD MATERIALS
+        // ✔ SUCCESS
         loadMaterials();
 
     })
@@ -153,30 +148,6 @@ document.getElementById("title").innerText =
     });
 
 }
-
-        // ⏳ PENDING
-        else if (data.status !== "approved") {
-            alert("Payment pending approval.");
-            window.location.href = "payment.html";
-            return;
-        }
-
-        // ⏳ EXPIRED CHECK
-        let expiry = data.expiresAt.toDate();
-
-        if (now > expiry) {
-            alert("Access expired. Please renew payment.");
-            window.location.href = "payment.html";
-            return;
-        }
-
-        // ✔ APPROVED → LOAD MATERIALS
-        loadMaterials();
-
-    });
-
-}
-
 // 📦 LOAD MATERIALS
 function loadMaterials() {
 
