@@ -1,20 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Admin Payments</title>
+<meta charset="UTF-8">
+<title>Admin Payment Dashboard</title>
+
 <style>
-body { font-family: Arial; background:#f4f6f9; }
-.container { width:90%; max-width:800px; margin:auto; background:white; padding:20px; }
-.card { padding:10px; margin:10px; background:#eee; border-radius:5px; }
-button { padding:8px; margin:5px; }
+body {
+    font-family: Arial;
+    background: #f4f6f9;
+    margin: 0;
+}
+
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.card {
+    background: #eee;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+}
+
+button {
+    padding: 8px 12px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.approve {
+    background: green;
+    color: white;
+}
+
+.reject {
+    background: red;
+    color: white;
+}
 </style>
 </head>
 
 <body>
 
+<header>
+    <h1>Admin Payment Dashboard</h1>
+</header>
+
 <div class="container">
-<h2>Pending Payments</h2>
-<div id="payments"></div>
+
+    <h2>Pending Payments</h2>
+    <div id="payments"></div>
+
 </div>
 
 <!-- Firebase -->
@@ -23,6 +72,7 @@ button { padding:8px; margin:5px; }
 
 <script>
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyASE0IKRHGqjHdxOxBovD4n5FqDm_KAukA",
   authDomain: "nalikule-college-books.firebaseapp.com",
@@ -37,7 +87,9 @@ const db = firebase.firestore();
 
 const container = document.getElementById("payments");
 
-function loadPayments(){
+
+// LOAD PAYMENTS
+function loadPayments() {
 
     db.collection("payments")
     .where("status", "==", "pending")
@@ -46,16 +98,22 @@ function loadPayments(){
 
         container.innerHTML = "";
 
+        if (snapshot.empty) {
+            container.innerHTML = "<p>No pending payments</p>";
+            return;
+        }
+
         snapshot.forEach(doc => {
             let data = doc.data();
 
             container.innerHTML += `
                 <div class="card">
                     <p><b>Name:</b> ${data.name}</p>
-                    <p><b>Reg:</b> ${data.regNumber}</p>
-                    <p><b>Transaction:</b> ${data.transactionId}</p>
+                    <p><b>Reg Number:</b> ${data.regNumber}</p>
+                    <p><b>Transaction ID:</b> ${data.transactionId}</p>
 
-                    <button onclick="approve('${doc.id}')">Approve</button>
+                    <button class="approve" onclick="approve('${doc.id}')">Approve</button>
+                    <button class="reject" onclick="reject('${doc.id}')">Reject</button>
                 </div>
             `;
         });
@@ -63,16 +121,40 @@ function loadPayments(){
     });
 }
 
-function approve(id){
+
+// APPROVE PAYMENT
+function approve(id) {
+
+    let now = new Date();
+
+    // 48 hours from now
+    let expiresAt = new Date(now.getTime() + (48 * 60 * 60 * 1000));
+
     db.collection("payments").doc(id).update({
         status: "approved",
-        access: "full"
+        access: "time_limited",
+        approvedAt: now,
+        expiresAt: expiresAt
     });
 
-    alert("Approved!");
+    alert("Payment Approved! User has 48 hours access.");
     loadPayments();
 }
 
+
+// REJECT PAYMENT
+function reject(id) {
+    db.collection("payments").doc(id).update({
+        status: "rejected",
+        access: "none"
+    });
+
+    alert("Payment Rejected!");
+    loadPayments();
+}
+
+
+// INITIAL LOAD
 loadPayments();
 
 </script>
