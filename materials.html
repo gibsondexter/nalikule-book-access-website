@@ -90,6 +90,63 @@ let semester = localStorage.getItem("semester");
 document.getElementById("title").innerText =
 `📚 ${program} | ${year} | ${semester}`;
 
+    function checkAccessAndLoad() {
+
+    let regNumber = localStorage.getItem("regNumber");
+
+    if (!regNumber) {
+        alert("No user found. Please login again.");
+        window.location.href = "index.html";
+        return;
+    }
+
+    db.collection("payments")
+    .where("regNumber", "==", regNumber)
+    .orderBy("createdAt", "desc")
+    .limit(1)
+    .get()
+    .then(snapshot => {
+
+        if (snapshot.empty) {
+            alert("No payment found. Please pay first.");
+            window.location.href = "payment.html";
+            return;
+        }
+
+        let data = snapshot.docs[0].data();
+
+        let now = new Date();
+
+        // ❌ REJECTED
+        if (data.status === "rejected") {
+            alert("Payment rejected. Please try again.");
+            window.location.href = "payment.html";
+            return;
+        }
+
+        // ⏳ PENDING
+        else if (data.status !== "approved") {
+            alert("Payment pending approval.");
+            window.location.href = "payment.html";
+            return;
+        }
+
+        // ⏳ EXPIRED CHECK
+        let expiry = data.expiresAt.toDate();
+
+        if (now > expiry) {
+            alert("Access expired. Please renew payment.");
+            window.location.href = "payment.html";
+            return;
+        }
+
+        // ✔ APPROVED → LOAD MATERIALS
+        loadMaterials();
+
+    });
+
+}
+
 // 📦 LOAD MATERIALS
 function loadMaterials() {
 
