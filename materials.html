@@ -95,20 +95,19 @@ document.getElementById("title").innerText =
     let regNumber = localStorage.getItem("regNumber");
 
     if (!regNumber) {
-        alert("No user found. Please login again.");
+        alert("Please login first");
         window.location.href = "index.html";
         return;
     }
 
     db.collection("payments")
     .where("regNumber", "==", regNumber)
-    .orderBy("createdAt", "desc")
+    .orderBy("approvedAt", "desc")
     .limit(1)
     .get()
     .then(snapshot => {
 
         if (snapshot.empty) {
-            alert("No payment found. Please pay first.");
             window.location.href = "payment.html";
             return;
         }
@@ -117,12 +116,39 @@ document.getElementById("title").innerText =
 
         let now = new Date();
 
-        // ❌ REJECTED
+        // ❌ REJECTED → block immediately
         if (data.status === "rejected") {
             alert("Payment rejected. Please try again.");
             window.location.href = "payment.html";
             return;
         }
+
+        // ❌ NOT APPROVED → block
+        if (data.status !== "approved") {
+            window.location.href = "payment.html";
+            return;
+        }
+
+        // ⏳ CHECK EXPIRY
+        let expiry = data.expiresAt ? data.expiresAt.toDate() : null;
+
+        if (!expiry) {
+            window.location.href = "payment.html";
+            return;
+        }
+
+        if (now > expiry) {
+            alert("Access expired. Please renew payment.");
+            window.location.href = "payment.html";
+            return;
+        }
+
+        // ✔ SUCCESS → LOAD MATERIALS
+        loadMaterials();
+
+    });
+
+}
 
         // ⏳ PENDING
         else if (data.status !== "approved") {
