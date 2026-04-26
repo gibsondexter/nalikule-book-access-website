@@ -90,7 +90,7 @@ let semester = localStorage.getItem("semester");
 document.getElementById("title").innerText =
 `📚 ${program} | ${year} | ${semester}`;
 
-    function checkAccessAndLoad() {
+   function checkAccessAndLoad() {
 
     let regNumber = localStorage.getItem("regNumber");
 
@@ -113,18 +113,18 @@ document.getElementById("title").innerText =
         }
 
         let data = snapshot.docs[0].data();
-
         let now = new Date();
 
-        // ❌ REJECTED → block immediately
+        // ❌ REJECTED
         if (data.status === "rejected") {
             alert("Payment rejected. Please try again.");
             window.location.href = "payment.html";
             return;
         }
 
-        // ❌ NOT APPROVED → block
+        // ⏳ NOT APPROVED
         if (data.status !== "approved") {
+            alert("Payment pending approval.");
             window.location.href = "payment.html";
             return;
         }
@@ -146,6 +146,10 @@ document.getElementById("title").innerText =
         // ✔ SUCCESS → LOAD MATERIALS
         loadMaterials();
 
+    })
+    .catch(error => {
+        console.log(error);
+        alert("Error checking access");
     });
 
 }
