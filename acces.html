@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Payments</title>
+<style>
+body { font-family: Arial; background:#f4f6f9; }
+.container { width:90%; max-width:800px; margin:auto; background:white; padding:20px; }
+.card { padding:10px; margin:10px; background:#eee; border-radius:5px; }
+button { padding:8px; margin:5px; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>Pending Payments</h2>
+<div id="payments"></div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyASE0IKRHGqjHdxOxBovD4n5FqDm_KAukA",
+  authDomain: "nalikule-college-books.firebaseapp.com",
+  projectId: "nalikule-college-books",
+  storageBucket: "nalikule-college-books.appspot.com",
+  messagingSenderId: "726295406083",
+  appId: "1:726295406083:web:d0b732575478cbf66a1036"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const container = document.getElementById("payments");
+
+function loadPayments(){
+
+    db.collection("payments")
+    .where("status", "==", "pending")
+    .get()
+    .then(snapshot => {
+
+        container.innerHTML = "";
+
+        snapshot.forEach(doc => {
+            let data = doc.data();
+
+            container.innerHTML += `
+                <div class="card">
+                    <p><b>Name:</b> ${data.name}</p>
+                    <p><b>Reg:</b> ${data.regNumber}</p>
+                    <p><b>Transaction:</b> ${data.transactionId}</p>
+
+                    <button onclick="approve('${doc.id}')">Approve</button>
+                </div>
+            `;
+        });
+
+    });
+}
+
+function approve(id){
+    db.collection("payments").doc(id).update({
+        status: "approved",
+        access: "full"
+    });
+
+    alert("Approved!");
+    loadPayments();
+}
+
+loadPayments();
+
+</script>
+
+</body>
+</html>
