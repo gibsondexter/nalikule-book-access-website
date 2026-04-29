@@ -112,22 +112,33 @@ function submitPayment() {
     let now = new Date();
     let expiry = new Date(now.getTime() + (12 * 60 * 60 * 1000));
 
-    db.collection("payments").doc(transactionId).set({
-        name: name,
-        regNumber: regNumber,
-        transactionId: transactionId,
-        status: "pending",
-        access: "grace",
-        createdAt: now,
-        expiresAt: expiry
-    })
-    .then(() => {
-        alert("✅ Payment submitted successfully!");
-        window.location.href = "materials.html";
-    })
-    .catch((error) => {
-        alert("❌ Transaction ID already used or invalid");
+    const docRef = db.collection("payments").doc(transactionId);
+
+    // 🔍 CHECK FIRST
+    docRef.get().then((doc) => {
+
+        if (doc.exists) {
+            alert("❌ This Transaction ID has already been used");
+            return;
+        }
+
+        // ✅ ONLY CREATE IF NOT EXISTS
+        docRef.set({
+            name: name,
+            regNumber: regNumber,
+            transactionId: transactionId,
+            status: "pending",
+            access: "grace",
+            createdAt: now,
+            expiresAt: expiry
+        })
+        .then(() => {
+            alert("✅ Payment submitted successfully!");
+            window.location.href = "materials.html";
+        });
+
     });
+
 }
 
 </script>
