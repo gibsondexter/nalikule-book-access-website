@@ -73,12 +73,12 @@ button {
 <script>
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyASE0IKRHGqjHdxOxBovD4n5FqDm_KAukA",
+    authDomain: "nalikule-college-books.firebaseapp.com",
+    projectId: "nalikule-college-books",
+    storageBucket: "nalikule-college-books.appspot.com",
+    messagingSenderId: "726295406083",
+    appId: "1:726295406083:web:eaf13bfb0bfe59316a1036"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -100,8 +100,9 @@ function upload() {
     }
 
     document.querySelector("button").disabled = true;
+    status.innerHTML = "⏳ Uploading... please wait";
 
-    // ================= FILE =================
+    // ================= FILE UPLOAD =================
     if (file) {
 
         let fileName = Date.now() + "_" + file.name;
@@ -113,12 +114,13 @@ function upload() {
 
             function(snapshot) {
                 let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                status.innerHTML = "Uploading: " + progress.toFixed(0) + "%";
+                status.innerHTML = "📤 Uploading: " + progress.toFixed(0) + "%";
             },
 
             function(error) {
-                status.innerHTML = "❌ Upload failed!";
-                alert(error.message);
+                console.error(error);
+                status.innerHTML = "❌ Upload failed: " + error.message;
+                alert("Upload failed: " + error.message);
                 document.querySelector("button").disabled = false;
             },
 
@@ -139,10 +141,11 @@ function upload() {
     else {
         alert("Upload file or paste link!");
         document.querySelector("button").disabled = false;
+        status.innerHTML = "";
     }
 }
 
-// SAVE TO FIREBASE
+// ================= SAVE TO FIRESTORE =================
 function saveData(form, title, link) {
 
     let status = document.getElementById("status");
@@ -155,7 +158,8 @@ function saveData(form, title, link) {
     })
     .then(() => {
 
-        status.innerHTML = "✅ Upload successful!";
+        status.innerHTML = "✅ Successfully uploaded!";
+        alert("Upload successful!");
 
         document.getElementById("title").value = "";
         document.getElementById("file").value = "";
@@ -165,8 +169,11 @@ function saveData(form, title, link) {
 
     })
     .catch(err => {
-        status.innerHTML = "❌ Failed!";
-        alert(err.message);
+
+        console.error(err);
+        status.innerHTML = "❌ Failed to save: " + err.message;
+        alert("Database error: " + err.message);
+
         document.querySelector("button").disabled = false;
     });
 }
