@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>dexter-library</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #002147;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #004080;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 15px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: yellow;
+        }
+
+        section {
+            padding: 40px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #002147;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .button {
+            background-color: #004080;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .button:hover {
+            background-color: #002147;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>DEXTER-LIBRARY</h1>
+    <p>Primary • Secondary • College • University Resources</p>
+</header>
+
+<nav>
+    <a href="#">Home</a>
+
+    <!-- PRIMARY -->
+    <a href="#" onclick="togglePrimary()">Primary</a>
+
+    <!-- SECONDARY -->
+    <a href="#" onclick="toggleSecondary()">Secondary</a>
+
+    <!-- COLLEGE (kept as before if needed later) -->
+    <a href="#" onclick="toggleCollege()">College</a>
+
+    <a href="#">University</a>
+    <a href="#">Contact</a>
+</nav>
+
+<section>
+    <h2>Welcome to Dexter Library</h2>
+
+    <p>
+        Your digital library for educational materials from Primary School to University level.
+        <br>
+        all books, Pathrets and other academic resources are here.
+        <br>
+    </p>
+
+    <br>
+
+    <a href="#" class="button">Explore Now</a>
+
+    <!-- 🔥 PRIMARY SECTION -->
+<div id="primaryBox" style="display:none; margin-top:25px; background:#ddd; padding:15px; border-radius:5px;">
+    <h3>Primary School</h3>
+
+    <p onclick="goToPayment()" style="cursor:pointer; color:blue;">Std 1</p>
+    <p onclick="goToPayment()" style="cursor:pointer; color:blue;">Std 2</p>
+    <p onclick="goToPayment()" style="cursor:pointer; color:blue;">Std 3</p>
+    <p onclick="goToPayment()" style="cursor:pointer; color:blue;">Std 4</p>
+    <p onclick="goToPayment()" style="cursor:pointer; color:blue;">Std 5</p>
+    <p onclick="goToPayment()" style="cursor:pointer; color:blue;">Std 6</p>
+    <p onclick="goToPayment()" style="cursor:pointer; color:blue;">Std 7</p>
+    <p onclick="goToPayment()" style="cursor:pointer; color:blue;">Std 8</p>
+</div>
+
+<!-- 🔥 SECONDARY SECTION -->
+<div id="secondaryBox" style="display:none; margin-top:25px; background:#ddd; padding:15px; border-radius:5px;">
+    <h3>Secondary School</h3>
+
+    <p onclick="goToPayment()" style="cursor:pointer; color:blue;">Form 1</p>
+    <p onclick="goToPayment()" style="cursor:pointer; color:blue;">Form 2</p>
+    <p onclick="goToPayment()" style="cursor:pointer; color:blue;">Form 3</p>
+    <p onclick="goToPayment()" style="cursor:pointer; color:blue;">Form 4</p>
+</div>
+
+    <!-- 🔥 COLLEGE SECTION (optional for future) -->
+    <div id="collegeBox" style="display:none; margin-top:25px; background:#ddd; padding:15px; border-radius:5px;">
+        <h3>College Categories</h3>
+        
+        <p><a href="https://YOUR_EDUCATION_COLLEGE_LINK">Education Colleges</a></p>
+        <p>Health Colleges</p>
+        <p>Technical Colleges</p>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 DEXTER-LIBRARY | Developed by Dexter</p>
+</footer>
+
+<!-- SCRIPT -->
+<script>
+
+function togglePrimary() {
+
+    var p = document.getElementById("primaryBox");
+    var s = document.getElementById("secondaryBox");
+    var c = document.getElementById("collegeBox");
+
+    s.style.display = "none";
+    c.style.display = "none";
+
+    if (p.style.display === "none" || p.style.display === "") {
+        p.style.display = "block";
+    } else {
+        p.style.display = "none";
+    }
+}
+
+function toggleSecondary() {
+
+    var p = document.getElementById("primaryBox");
+    var s = document.getElementById("secondaryBox");
+    var c = document.getElementById("collegeBox");
+
+    p.style.display = "none";
+    c.style.display = "none";
+
+    if (s.style.display === "none" || s.style.display === "") {
+        s.style.display = "block";
+    } else {
+        s.style.display = "none";
+    }
+}
+
+function toggleCollege() {
+
+    var p = document.getElementById("primaryBox");
+    var s = document.getElementById("secondaryBox");
+    var c = document.getElementById("collegeBox");
+
+    p.style.display = "none";
+    s.style.display = "none";
+
+    if (c.style.display === "none" || c.style.display === "") {
+        c.style.display = "block";
+    } else {
+        c.style.display = "none";
+    }
+}
+
+</script>
+<script>
+function goToPayment() {
+    window.location.href = "payment.html";
+}
+</script>
+
+</body>
+</html>
