@@ -100,9 +100,9 @@ const db = firebase.firestore();
 // 🚀 SUBMIT PAYMENT FUNCTION
 function submitPayment() {
 
-    let name = document.getElementById("name").value;
-    let regNumber = document.getElementById("regNumber").value;
-    let transactionId = document.getElementById("transactionId").value;
+    let name = document.getElementById("name").value.trim();
+    let regNumber = document.getElementById("regNumber").value.trim();
+    let transactionId = document.getElementById("transactionId").value.trim().toUpperCase();
 
     if (!name || !regNumber || !transactionId) {
         alert("Please fill all fields");
@@ -110,11 +110,9 @@ function submitPayment() {
     }
 
     let now = new Date();
-
-    // ⏳ 12-hour grace access
     let expiry = new Date(now.getTime() + (12 * 60 * 60 * 1000));
 
-    db.collection("payments").add({
+    db.collection("payments").doc(transactionId).set({
         name: name,
         regNumber: regNumber,
         transactionId: transactionId,
@@ -124,11 +122,11 @@ function submitPayment() {
         expiresAt: expiry
     })
     .then(() => {
-        alert("✅ Payment submitted! You have 12 hours access.");
+        alert("✅ Payment submitted successfully!");
         window.location.href = "materials.html";
     })
-    .catch(error => {
-        alert("❌ Error: " + error.message);
+    .catch((error) => {
+        alert("❌ Transaction ID already used or invalid");
     });
 }
 
