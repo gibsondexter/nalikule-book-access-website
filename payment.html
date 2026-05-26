@@ -43,8 +43,8 @@
         </div>
 
         <div class="form-group">
-            <input type="text" id="name" placeholder="Full Name">
-            <input type="text" id="regNumber" placeholder="Registration Number">
+            <input type="text" id="name" placeholder="Loading Full Name..." readonly>
+            <input type="text" id="regNumber" placeholder="Loading Reg Number..." readonly>
             <input type="text" id="transactionId" placeholder="Transaction ID / Message">
             <button onclick="submitPayment()">Submit Verification Details</button>
         </div>
@@ -56,6 +56,7 @@
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
@@ -70,14 +71,41 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const auth = firebase.auth();
+
+// 📥 FETCH LOGGED-IN STUDENT INFORMATION AUTOMATICALLY
+auth.onAuthStateChanged((user) => {
+    if (!user) {
+        alert("Please log in first.");
+        window.location.href = "index.html";
+        return;
+    }
+
+    db.collection("students").doc(user.uid).get()
+    .then((doc) => {
+        if (doc.exists) {
+            let data = doc.data();
+            let middle = data.middleName ? data.middleName + " " : "";
+            
+            // Auto-fill form inputs
+            document.getElementById("name").value = `${data.firstName} ${middle}${data.lastName}`;
+            document.getElementById("regNumber").value = data.regNumber;
+        } else {
+            alert("Student account document not found.");
+        }
+    })
+    .catch((error) => {
+        console.error("Error filling details: ", error);
+    });
+});
 
 function submitPayment() {
     let name = document.getElementById("name").value.trim();
     let regNumber = document.getElementById("regNumber").value.trim();
     let transactionId = document.getElementById("transactionId").value.trim().toUpperCase();
 
-    if (!name || !regNumber || !transactionId) {
-        alert("Please fill all fields completely");
+    if (!transactionId) {
+        alert("Please enter your Transaction ID or Reference message.");
         return;
     }
 
@@ -85,7 +113,7 @@ function submitPayment() {
 
     docRef.get().then((doc) => {
         if (doc.exists) {
-            alert("❌ This Transaction Reference Key has already been used.");
+            alert("❌ This Transaction Reference Key has already been captured.");
             return;
         }
 
@@ -98,9 +126,8 @@ function submitPayment() {
             approvedAt: null
         })
         .then(() => {
-            // Save the reg number locally so materials.html can look it up instantly
             localStorage.setItem("userRegNumber", regNumber);
-            alert("✅ Reference submitted! Redirecting directly to materials for your 1.5-hour grace window.");
+            alert("✅ Reference submitted! You can view materials immediately for 1.5 hours.");
             window.location.href = "materials.html";
         });
     });
