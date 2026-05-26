@@ -4,156 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Student Payment Portal</title>
-
 <style>
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: #f4f6f9;
-        color: #333;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
-
-    header {
-        background: #2c3e50;
-        color: white;
-        text-align: center;
-        padding: 20px 15px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    header h1 {
-        font-size: 1.5rem;
-        font-weight: 600;
-    }
-
-    .main-content {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        width: 100%;
-    }
-
-    .container {
-        width: 100%;
-        max-width: 480px;
-        background: white;
-        padding: 30px 25px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    }
-
-    .info {
-        background: #fdfefe;
-        border: 1px solid #e1e8ed;
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-    }
-
-    .info h3 {
-        color: #2c3e50;
-        margin-bottom: 12px;
-        font-size: 1.1rem;
-        border-bottom: 2px solid #f4f6f9;
-        padding-bottom: 5px;
-    }
-
-    .info p {
-        font-size: 0.95rem;
-        margin: 8px 0;
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .amount-tag {
-        font-size: 1.2rem;
-        color: #27ae60;
-        font-weight: bold;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
+    header { background: #2c3e50; color: white; text-align: center; padding: 20px 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    header h1 { font-size: 1.5rem; }
+    .main-content { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .container { width: 100%; max-width: 480px; background: white; padding: 30px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); }
+    .info { background: #fdfefe; border: 1px solid #e1e8ed; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+    .info h3 { color: #2c3e50; margin-bottom: 12px; font-size: 1.1rem; border-bottom: 2px solid #f4f6f9; padding-bottom: 5px; }
+    .info p { font-size: 0.95rem; margin: 8px 0; display: flex; justify-content: space-between; }
+    .amount-tag { font-size: 1.2rem; color: #27ae60; font-weight: bold; }
     .airtel { color: #e74c3c; font-weight: bold; }
     .mpamba { color: #2980b9; font-weight: bold; }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    input {
-        width: 100%;
-        padding: 12px 15px;
-        border: 1px solid #ccd1d9;
-        border-radius: 6px;
-        font-size: 0.95rem;
-        outline: none;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    input:focus {
-        border-color: #27ae60;
-        box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.15);
-    }
-
-    button {
-        width: 100%;
-        padding: 14px;
-        background: #27ae60;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-        margin-top: 8px;
-        transition: background 0.2s, transform 0.1s;
-    }
-
-    button:hover {
-        background: #219653;
-    }
-
-    #loadingScreen {
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: #f4f6f9;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        font-size: 1.2rem;
-        color: #2c3e50;
-    }
-
-    footer {
-        background-color: #002147;
-        color: rgba(255, 255, 255, 0.8);
-        text-align: center;
-        padding: 15px;
-        font-size: 0.85rem;
-        margin-top: auto;
-    }
-
-    @media (max-width: 480px) {
-        .main-content { padding: 12px; align-items: flex-start; }
-        .container { padding: 20px 15px; box-shadow: none; border: 1px solid #e1e4e8; }
-    }
+    .form-group { display: flex; flex-direction: column; gap: 12px; }
+    input { width: 100%; padding: 12px 15px; border: 1px solid #ccd1d9; border-radius: 6px; font-size: 0.95rem; outline: none; }
+    input:focus { border-color: #27ae60; }
+    button { width: 100%; padding: 14px; background: #27ae60; color: white; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 8px; }
+    button:hover { background: #219653; }
+    footer { background-color: #002147; color: rgba(255, 255, 255, 0.8); text-align: center; padding: 15px; font-size: 0.85rem; margin-top: auto; }
+    @media (max-width: 480px) { .main-content { padding: 12px; align-items: flex-start; } .container { padding: 20px 15px; box-shadow: none; border: 1px solid #e1e4e8; } }
 </style>
 </head>
-
 <body>
-
-<div id="loadingScreen">Verifying library access permissions...</div>
 
 <header>
     <h1>Student Payment Portal</h1>
@@ -173,7 +46,6 @@
             <input type="text" id="name" placeholder="Full Name">
             <input type="text" id="regNumber" placeholder="Registration Number">
             <input type="text" id="transactionId" placeholder="Transaction ID / Message">
-
             <button onclick="submitPayment()">Submit Verification Details</button>
         </div>
     </div>
@@ -184,7 +56,6 @@
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
@@ -194,80 +65,12 @@ const firebaseConfig = {
   projectId: "nalikule-college-books",
   storageBucket: "nalikule-college-books.appspot.com",
   messagingSenderId: "726295406083",
-  appId: "1:726295406083:web:d0b732575478cbf66a1036"
+  appId: "1:726295406083:web:eaf13bfb0bfe59316a1036"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const auth = firebase.auth();
 
-// 🛡️ DYNAMIC REDIRECTION GATEWAY ON LOAD
-auth.onAuthStateChanged((user) => {
-    if (!user) {
-        alert("Please log in first.");
-        window.location.href = "index.html"; 
-        return;
-    }
-
-    db.collection("students").doc(user.uid).get()
-    .then((studentDoc) => {
-        if (!studentDoc.exists) {
-            hideLoading();
-            return;
-        }
-
-        let regNo = studentDoc.data().regNumber;
-        document.getElementById("name").value = `${studentDoc.data().firstName} ${studentDoc.data().lastName}`;
-        document.getElementById("regNumber").value = regNo;
-
-        // Fetch their latest submission status
-        return db.collection("payments")
-            .where("regNumber", "==", regNo)
-            .orderBy("createdAt", "desc")
-            .limit(1)
-            .get();
-    })
-    .then((paymentQuery) => {
-        if (paymentQuery && !paymentQuery.empty) {
-            let latestPayment = paymentQuery.docs[0].data();
-            let currentTime = new Date().getTime();
-
-            // 🟢 1. APPROVED STATUS (48 Hours Access Check)
-            if (latestPayment.status === "approved") {
-                let approvedTime = latestPayment.approvedAt.toDate().getTime();
-                let fortyEightHours = 48 * 60 * 60 * 1000;
-
-                if (currentTime - approvedTime < fortyEightHours) {
-                    window.location.href = "materials.html";
-                    return;
-                }
-            } 
-            // 🟡 2. PENDING STATUS (Now 1 Hour Grace Period Check)
-            else if (latestPayment.status === "pending") {
-                let createdTime = latestPayment.createdAt.toDate().getTime();
-                let oneHour = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
-
-                if (currentTime - createdTime < oneHour) {
-                    window.location.href = "materials.html";
-                    return;
-                }
-            }
-            // 🔴 3. REJECTED STATUS
-            // If rejected, do nothing—keep them stuck on this form page.
-        }
-        hideLoading();
-    })
-    .catch((err) => {
-        console.error("Routing validation error: ", err);
-        hideLoading();
-    });
-});
-
-function hideLoading() {
-    document.getElementById("loadingScreen").style.display = "none";
-}
-
-// 🚀 PROCESS AND STORE SUBMISSION DATA
 function submitPayment() {
     let name = document.getElementById("name").value.trim();
     let regNumber = document.getElementById("regNumber").value.trim();
@@ -282,7 +85,7 @@ function submitPayment() {
 
     docRef.get().then((doc) => {
         if (doc.exists) {
-            alert("❌ This Transaction Reference Key has already been captured.");
+            alert("❌ This Transaction Reference Key has already been used.");
             return;
         }
 
@@ -295,12 +98,13 @@ function submitPayment() {
             approvedAt: null
         })
         .then(() => {
-            alert("✅ Reference submitted! You have a 1-hour grace period to view materials immediately while we process your payment.");
+            // Save the reg number locally so materials.html can look it up instantly
+            localStorage.setItem("userRegNumber", regNumber);
+            alert("✅ Reference submitted! Redirecting directly to materials for your 1.5-hour grace window.");
             window.location.href = "materials.html";
         });
     });
 }
 </script>
-
 </body>
 </html>
