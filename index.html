@@ -3,129 +3,215 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student books access</title>
+<title>Student Books Access</title>
 
 <style>
-body {
-    font-family: Arial;
-    background: #f4f6f9;
-    margin: 0;
-}
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 
-header {
-    background: #2c3e50;
-    color: white;
-    text-align: center;
-    padding: 15px;
-}
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f4f6f9;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
 
-.container {
-    width: 90%;
-    max-width: 500px;
-    margin: 20px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-}
+    header {
+        background: #2c3e50;
+        color: white;
+        text-align: center;
+        padding: 20px 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
 
-input {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-}
+    header h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
 
-button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    border: none;
-    color: white;
-    cursor: pointer;
-}
+    /* Core Container Layout */
+    .main-content {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        width: 100%;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 450px;
+        background: white;
+        padding: 30px 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: transform 0.2s ease;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        color: #2c3e50;
+        font-size: 1.6rem;
+        text-align: center;
+    }
+
+    /* Form Layout Elements */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ccd1d9;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+    }
+
+    /* Buttons */
+    button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 15px;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
+    }
+
+    button:active {
+        transform: scale(0.98);
+    }
+
+    .login-btn {
+        background: #3498db;
+    }
+
+    .login-btn:hover {
+        background: #2980b9;
+    }
+
+    .register-btn {
+        background: #27ae60;
+    }
+
+    .register-btn:hover {
+        background: #219653;
+    }
+
+    /* Toggle Links */
+    .toggle {
+        text-align: center;
+        margin-top: 20px;
+        cursor: pointer;
+        color: #3498db;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+
+    .toggle:hover {
+        color: #2980b9;
+        text-decoration: underline;
+    }
+
     footer {
-            background-color: #002147;
-            color: white;
-            text-align: center;
-            padding: 15px;
+        background-color: #002147;
+        color: rgba(255, 255, 255, 0.8);
+        text-align: center;
+        padding: 15px;
+        font-size: 0.85rem;
+        margin-top: auto;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    /* Responsive Adjustments for Mobile Viewports */
+    @media (max-width: 480px) {
+        .main-content {
+            padding: 10px;
+            align-items: flex-start; /* Better scrolling flow on small phones */
+        }
+        
+        .container {
+            border-radius: 8px;
+            padding: 20px 15px;
+            box-shadow: none; /* Flat design fits mobile views beautifully */
+            border: 1px solid #e1e4e8;
         }
 
-.login-btn {
-    background: #3498db;
-}
-
-.register-btn {
-    background: #27ae60;
-}
-
-.toggle {
-    text-align: center;
-    margin-top: 10px;
-    cursor: pointer;
-    color: blue;
-}
-
-.hidden {
-    display: none;
-}
+        header h1 {
+            font-size: 1.25rem;
+        }
+    }
 </style>
 </head>
 
 <body>
 
 <header>
-    <h1>NCE/DCE books access Website <br>
-
-        
-    </h1>
+    <h1>NCE / DCE Books Access Website</h1>
 </header>
 
-<!-- LOGIN -->
-<div class="container" id="loginForm">
+<main class="main-content">
+    <div class="container" id="loginForm">
+        <h2>Login</h2>
+        <div class="form-grid">
+            <input type="email" id="loginEmail" placeholder="Email Address">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button class="login-btn" onclick="login()">Login</button>
+        </div>
+        <p class="toggle" onclick="showRegister()">Don't have an account? Register</p>
+    </div>
 
-    <h2>Login</h2>
+    <div class="container hidden" id="registerForm">
+        <h2>Register</h2>
+        <div class="form-grid">
+            <input type="text" id="firstName" placeholder="First Name">
+            <input type="text" id="middleName" placeholder="Middle Name (Optional)">
+            <input type="text" id="lastName" placeholder="Last Name">
+            <input type="text" id="regNumber" placeholder="Registration Number">
+            <input type="text" id="institution" placeholder="College / University">
+            <input type="date" id="dob" placeholder="Date of Birth" title="Date of Birth">
+            <input type="email" id="email" placeholder="Email Address">
+            <input type="password" id="password" placeholder="Create Password">
+            <button class="register-btn" onclick="register()">Create Account</button>
+        </div>
+        <p class="toggle" onclick="showLogin()">Already have an account? Login</p>
+    </div>
+</main>
 
-    <input type="text" id="loginEmail" placeholder="Email">
-    <input type="password" id="loginPassword" placeholder="Password">
-
-    <button class="login-btn" onclick="login()">Login</button>
-
-    <p class="toggle" onclick="showRegister()">Don't have an account? Register</p>
-
-</div>
-
-    <footer>
+<footer>
     <p>© 2026 DEXTER-LIBRARY | Developed by Dexter</p>
 </footer>
-<!-- REGISTER -->
-<div class="container hidden" id="registerForm">
 
-    <h2>Register</h2>
-
-    <input type="text" id="firstName" placeholder="First Name">
-    <input type="text" id="middleName" placeholder="Middle Name">
-    <input type="text" id="lastName" placeholder="Last Name">
-
-    <input type="text" id="regNumber" placeholder="Registration Number">
-    <input type="text" id="institution" placeholder="College / University">
-    <input type="date" id="dob" placeholder="Date of Birth">
-
-    <input type="text" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-
-    <button class="register-btn" onclick="register()">Create Account</button>
-
-    <p class="toggle" onclick="showLogin()">Already have an account? Login</p>
-
-</div>
-
-<!-- FIREBASE COMPAT SDK (IMPORTANT FIX) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-
-// 🔥 YOUR FIREBASE CONFIG
+// FIREBASE CONFIG
 const firebaseConfig = {
     apiKey: "AIzaSyASE0IKRHGqjHdxOxBovD4n5FqDm_KAukA",
     authDomain: "nalikule-college-books.firebaseapp.com",
@@ -143,9 +229,7 @@ const db = firebase.firestore();
 
 console.log("🔥 Firebase connected");
 
-// =====================
 // SWITCH FORMS
-// =====================
 function showRegister() {
     document.getElementById("loginForm").classList.add("hidden");
     document.getElementById("registerForm").classList.remove("hidden");
@@ -156,30 +240,25 @@ function showLogin() {
     document.getElementById("loginForm").classList.remove("hidden");
 }
 
-// =====================
 // REGISTER USER
-// =====================
 function register() {
-
-    let firstName = document.getElementById("firstName").value;
-    let middleName = document.getElementById("middleName").value;
-    let lastName = document.getElementById("lastName").value;
-    let regNumber = document.getElementById("regNumber").value;
-    let institution = document.getElementById("institution").value;
+    let firstName = document.getElementById("firstName").value.trim();
+    let middleName = document.getElementById("middleName").value.trim();
+    let lastName = document.getElementById("lastName").value.trim();
+    let regNumber = document.getElementById("regNumber").value.trim();
+    let institution = document.getElementById("institution").value.trim();
     let dob = document.getElementById("dob").value;
-    let email = document.getElementById("email").value;
+    let email = document.getElementById("email").value.trim();
     let password = document.getElementById("password").value;
 
-    if (!email || !password || !regNumber) {
+    if (!email || !password || !regNumber || !firstName || !lastName) {
         alert("Please fill all required fields");
         return;
     }
 
     auth.createUserWithEmailAndPassword(email, password)
     .then(userCredential => {
-
         let user = userCredential.user;
-
         return db.collection("students").doc(user.uid).set({
             firstName,
             middleName,
@@ -189,7 +268,6 @@ function register() {
             dob,
             email
         });
-
     })
     .then(() => {
         alert("Account created successfully!");
@@ -200,31 +278,27 @@ function register() {
     });
 }
 
-// =====================
 // LOGIN USER
-// =====================
 function login() {
-
-    let email = document.getElementById("loginEmail").value;
+    let email = document.getElementById("loginEmail").value.trim();
     let password = document.getElementById("loginPassword").value;
+
+    if (!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+    }
 
     auth.signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
-
         let user = userCredential.user;
 
-        // 👇 ADMIN CHECK
         if (user.email === "gibsondexter34@gmail.com") {
-
             alert("Welcome Admin");
             window.location.href = "admin.html";
-
         } else {
-
             alert("Login successful");
             window.location.href = "dashboard.html";
         }
-
     })
     .catch((error) => {
         alert(error.message);
