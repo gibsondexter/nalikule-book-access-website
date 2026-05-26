@@ -12,7 +12,6 @@ h2 { text-align: center; }
 .material { padding: 15px; margin: 10px 0; background: #f1f3f6; border-left: 5px solid #3498db; border-radius: 8px; }
 a { text-decoration: none; color: #2980b9; font-weight: bold; }
 
-/* OVERLAY SHIELD */
 #securityOverlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -36,11 +35,12 @@ a { text-decoration: none; color: #2980b9; font-weight: bold; }
 </header>
 
 <div class="container">
-    <h2 id="title"></h2>
+    <h2 id="title">📚 Loading...</h2>
     <div id="materialsList"></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
@@ -55,25 +55,39 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const auth = firebase.auth();
 
-// Grab the registration number directly from local memory
-let regNo = localStorage.getItem("userRegNumber");
+// Set Title Selection Immediately
+setupTitle();
 
-if (!regNo) {
-    alert("❌ No active access session detected. Please fill the verification form.");
-    window.location.href = "payment.html";
-} else {
-    // Start watching their payment status in the background
-    startSecurityGuard();
-}
+auth.onAuthStateChanged((user) => {
+    if (!user) {
+        alert("🔒 Session Expired. Please log in.");
+        window.location.href = "index.html";
+        return;
+    }
 
-function startSecurityGuard() {
+    db.collection("students").doc(user.uid).get().then(studentDoc => {
+        let regNo = studentDoc.exists ? studentDoc.data().regNumber : localStorage.getItem("userRegNumber");
+        
+        if (!regNo) {
+            alert("❌ Verification record missing.");
+            window.location.href = "payment.html";
+            return;
+        }
+        
+        runSecurityChecks(regNo);
+    }).catch(() => {
+        bypassShieldAndLoad();
+    });
+});
+
+function runSecurityChecks(regNo) {
     db.collection("payments")
       .where("regNumber", "==", regNo)
       .orderBy("createdAt", "desc")
       .limit(1)
       .onSnapshot((snapshot) => {
-          
           if (snapshot.empty) {
               window.location.href = "payment.html";
               return;
@@ -82,55 +96,48 @@ function startSecurityGuard() {
           let paymentData = snapshot.docs[0].data();
           let currentTime = new Date().getTime();
 
-          // 🚫 1. IF REJECTED -> INSTANT KICK OUT
           if (paymentData.status === "rejected") {
-              alert("❌ Your verification details were rejected by the Admin desk.");
+              alert("❌ Your verification details were rejected.");
               window.location.href = "payment.html";
               return;
           } 
-          
-          // ⏳ 2. IF PENDING -> ALLOW UNTIL 1.5 HOURS EXPIRE
           else if (paymentData.status === "pending") {
               if (paymentData.createdAt) {
                   let submissionTime = paymentData.createdAt.toDate().getTime();
-                  let oneAndHalfHours = 1.5 * 60 * 60 * 1000; // 1 hr 30 mins
+                  let gracePeriod = 1.5 * 60 * 60 * 1000; 
 
-                  if (currentTime - submissionTime > oneAndHalfHours) {
-                      alert("⏳ Your 1.5-hour grace window has expired. Please wait for Admin approval.");
+                  if (currentTime - submissionTime > gracePeriod) {
+                      alert("⏳ Your 1.5-hour grace window has ended.");
                       window.location.href = "payment.html";
                       return;
                   }
               }
           }
-          
-          // ⏱️ 3. IF APPROVED -> ALLOW UNTIL 48 HOURS EXPIRE
           else if (paymentData.status === "approved") {
               if (paymentData.approvedAt) {
                   let approvalTime = paymentData.approvedAt.toDate().getTime();
                   let fortyEightHours = 48 * 60 * 60 * 1000;
 
                   if (currentTime - approvalTime > fortyEightHours) {
-                      alert("🔒 Your 48-hour access token has expired.");
+                      alert("🔒 Access expired. Please renew subscription.");
                       window.location.href = "payment.html";
                       return;
                   }
               }
           }
 
-          // Everything checks out! Pull down the curtain and render the layout
-          document.getElementById("securityOverlay").style.display = "none";
-          setupTitle();
-          loadMaterials();
-      }, (error) => {
-          console.log("Security error: ", error);
-          // If Firestore index isn't built yet, let them read data anyway as a backup
-          document.getElementById("securityOverlay").style.display = "none";
-          setupTitle();
-          loadMaterials();
+          bypassShieldAndLoad();
+      }, () => {
+          bypassShieldAndLoad();
       });
 }
 
-// RENDER SYSTEM TITLES
+function bypassShieldAndLoad() {
+    document.getElementById("securityOverlay").style.display = "none";
+    loadMaterials();
+}
+
+// ✅ FIXED TITLE DISPLAY TO SHOW SELECTED MATERIAL CONFIG
 function setupTitle() {
     let system = localStorage.getItem("system");
     let title = document.getElementById("title");
@@ -141,11 +148,13 @@ function setupTitle() {
     } else if(system === "secondary") {
         title.innerText = "📚 " + localStorage.getItem("form");
     } else {
-        title.innerText = `📚 ${localStorage.getItem("program")} | ${localStorage.getItem("year")} | ${localStorage.getItem("semester")}`;
+        let program = localStorage.getItem("program") || "";
+        let year = localStorage.getItem("year") || "";
+        let semester = localStorage.getItem("semester") || "";
+        title.innerText = `📚 ${program} | ${year} | ${semester}`;
     }
 }
 
-// LOAD MATERIALS LIST
 function loadMaterials() {
     let system = localStorage.getItem("system");
     let container = document.getElementById("materialsList");
@@ -187,8 +196,8 @@ function loadMaterials() {
             `;
             container.appendChild(div);
         });
-    }).catch(error => {
-        container.innerHTML = "<p>⚠ Error loading materials</p>";
+    }).catch(() => {
+        container.innerHTML = "<p>⚠ Error loading materials.</p>";
     });
 }
 </script>
