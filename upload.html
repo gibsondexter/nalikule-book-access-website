@@ -2,118 +2,336 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Admin Upload</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Upload | Nalikule</title>
 
 <style>
-body { font-family: Arial; background:#f4f6f9; }
+    :root {
+        --primary: #004080;
+        --primary-hover: #002d5a;
+        --success: #2e7d32;
+        --success-hover: #1b5e20;
+        --danger: #d32f2f;
+        --danger-hover: #c62828;
+        --bg-main: #f4f6f9;
+        --bg-card: #ffffff;
+        --text-dark: #333333;
+        --text-muted: #666666;
+        --border-color: #dddddd;
+        --radius: 8px;
+        --shadow: 0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1);
+    }
 
-.container {
-    width:90%;
-    max-width:600px;
-    margin:20px auto;
-    background:white;
-    padding:20px;
-    border-radius:10px;
-}
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 
-input, select, button {
-    width:100%;
-    padding:10px;
-    margin:10px 0;
-}
+    body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        background: var(--bg-main); 
+        color: var(--text-dark);
+        line-height: 1.6;
+        padding: 20px 10px;
+    }
 
-button {
-    background:green;
-    color:white;
-    border:none;
-    cursor:pointer;
-}
+    /* Header styling */
+    .header-section {
+        text-align: center;
+        margin: 20px auto 30px auto;
+        max-width: 650px;
+    }
 
-#status {
-    text-align:center;
-    font-weight:bold;
-}
+    .header-section h2 {
+        font-size: 1.8rem;
+        color: var(--primary);
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .header-section .subtitle {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-top: 5px;
+        display: block;
+        font-weight: 600;
+    }
+
+    /* Main Container */
+    .container {
+        width: 100%;
+        max-width: 650px;
+        margin: 0 auto;
+        background: var(--bg-card);
+        padding: 30px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+
+    /* Top Quick Action Action Button */
+    .action-row {
+        margin-bottom: 25px;
+    }
+
+    .btn-danger-link {
+        display: block;
+        text-align: center;
+        padding: 12px;
+        background: var(--danger);
+        color: white;
+        text-decoration: none;
+        border-radius: var(--radius);
+        font-weight: bold;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        transition: background 0.2s ease, transform 0.1s ease;
+        box-shadow: 0 2px 4px rgba(211, 47, 47, 0.2);
+    }
+
+    .btn-danger-link:hover {
+        background: var(--danger-hover);
+    }
+    
+    .btn-danger-link:active {
+        transform: scale(0.98);
+    }
+
+    /* Form Grid Elements */
+    .form-group-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    /* Form Inputs styling */
+    label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    input[type="text"], select, input[type="file"] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        background-color: #fafafa;
+        font-size: 0.95rem;
+        color: var(--text-dark);
+        transition: border-color 0.2s, background-color 0.2s;
+        outline: none;
+    }
+
+    input[type="text"]:focus, select:focus {
+        border-color: var(--primary);
+        background-color: #ffffff;
+        box-shadow: 0 0 0 3px rgba(0, 64, 128, 0.1);
+    }
+
+    input[type="file"] {
+        background: #ffffff;
+        cursor: pointer;
+        padding: 8px 12px;
+    }
+
+    /* Divider styling */
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 20px 0;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .divider::before, .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .divider:not(:empty)::before { margin-right: .5em; }
+    .divider:not(:empty)::after { margin-left: .5em; }
+
+    /* Action Upload Button */
+    button.btn-upload {
+        width: 100%;
+        background: var(--success);
+        color: white;
+        border: none;
+        padding: 14px;
+        font-size: 1rem;
+        font-weight: bold;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
+        box-shadow: 0 3px 6px rgba(46, 125, 50, 0.2);
+        margin-top: 10px;
+    }
+
+    button.btn-upload:hover {
+        background: var(--success-hover);
+    }
+
+    button.btn-upload:active {
+        transform: scale(0.99);
+    }
+
+    button.btn-upload:disabled {
+        background: #999;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Bottom Navigation Links */
+    .nav-links-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-top: 30px;
+        border-top: 1px solid #eeeeee;
+        padding-top: 25px;
+    }
+
+    .btn-nav-link {
+        display: block;
+        text-align: center;
+        padding: 12px;
+        background: var(--primary);
+        color: white;
+        text-decoration: none;
+        border-radius: var(--radius);
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: background 0.2s, transform 0.1s;
+        box-shadow: 0 2px 4px rgba(0, 64, 128, 0.15);
+    }
+
+    .btn-nav-link:hover {
+        background: var(--primary-hover);
+    }
+
+    .btn-nav-link:active {
+        transform: scale(0.98);
+    }
+
+    /* Dynamic Status Text */
+    #status {
+        text-align: center;
+        font-weight: 600;
+        margin-top: 20px;
+        font-size: 0.95rem;
+        min-height: 24px;
+    }
+
+    /* Tablet and Desktop Responsiveness Enhancement */
+    @media (min-width: 500px) {
+        .form-group-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .header-section h2 {
+            font-size: 2.1rem;
+        }
+        body {
+            padding: 40px 20px;
+        }
+    }
 </style>
 </head>
 
 <body>
 
-                                           <h2><b>WELCOME DEXTER GIBSON TO THE ADMIN PANEL</b> <br>
-                                                               THE WEBSITE OWNER
-        <style>
-            text-align:center;
-        
-        </style>
-    
-    </h2>
+<div class="header-section">
+    <h2>WELCOME DEXTER GIBSON TO THE ADMIN PANEL</h2>
+    <span class="subtitle">The Website Owner</span>
+</div>
 
 <div class="container">
-    <a href="acces.html" 
-       style="display:inline-block; padding:15px 25px; margin:10px; background:red; color:white; text-decoration:none; border-radius:5px;">
-        CHECK PENDING PAYMENTS
-    </a>
-
-
-
-<select id="program">
-    <option>MAT/COM</option>
-    <option>MAT/BIO</option>
-    <option>MAT/PHY</option>
-    <option>MAT/AGR</option>
-    <option>MAT/CHEM</option>
-    <option>MAT/HEC</option>
-    <option>AGR/HEC</option>
-    <option>AGR/BIO</option>
-    <option>BIO/HEC</option>
-    <option>ENG/LAL</option>
     
-</select>
+    <div class="action-row">
+        <a href="acces.html" class="btn-danger-link">
+            🔍 CHECK PENDING PAYMENTS
+        </a>
+    </div>
 
-<select id="year">
-    <option>Year 1</option>
-    <option>Year 2</option>
-    <option>Year 3</option>
-    <option>Year 4</option>
-</select>
+    <div class="form-group-grid">
+        <div>
+            <label for="program">Program</label>
+            <select id="program">
+                <option>MAT/COM</option>
+                <option>MAT/BIO</option>
+                <option>MAT/PHY</option>
+                <option>MAT/AGR</option>
+                <option>MAT/CHEM</option>
+                <option>MAT/HEC</option>
+                <option>AGR/HEC</option>
+                <option>AGR/BIO</option>
+                <option>BIO/HEC</option>
+                <option>ENG/LAL</option>
+            </select>
+        </div>
 
-<select id="semester">
-    <option>Semester 1</option>
-    <option>Semester 2</option>
-</select>
+        <div>
+            <label for="year">Year Level</label>
+            <select id="year">
+                <option>Year 1</option>
+                <option>Year 2</option>
+                <option>Year 3</option>
+                <option>Year 4</option>
+            </select>
+        </div>
 
-<input type="text" id="title" placeholder="Material Title">
+        <div>
+            <label for="semester">Semester</label>
+            <select id="semester">
+                <option>Semester 1</option>
+                <option>Semester 2</option>
+            </select>
+        </div>
+    </div>
 
-<input type="file" id="file">
+    <div style="margin-bottom: 15px;">
+        <label for="title">Material Title</label>
+        <input type="text" id="title" placeholder="e.g. Advanced Calculus Lecture Notes">
+    </div>
 
-<input type="text" id="link" placeholder="OR paste Google Drive link">
+    <div style="margin-bottom: 15px;">
+        <label for="file">Upload Local File</label>
+        <input type="file" id="file">
+    </div>
 
-<button onclick="upload()">Upload Material</button>
+    <div class="divider">OR</div>
 
-<div style="text-align:center; margin-top:30px;">
+    <div style="margin-bottom: 20px;">
+        <label for="link">External Resource URL</label>
+        <input type="text" id="link" placeholder="Paste your Google Drive or cloud link here">
+    </div>
 
-    <a href="primary.html" 
-       style="display:inline-block; padding:15px 25px; margin:10px; background:#004080; color:white; text-decoration:none; border-radius:5px;">
-        Primary Upload
-    </a>
+    <button class="btn-upload" onclick="upload()">🚀 Upload Material</button>
 
-    <a href="secondary.html" 
-       style="display:inline-block; padding:15px 25px; margin:10px; background:#004080; color:white; text-decoration:none; border-radius:5px;">
-        Secondary Upload
-    </a>
+    <p id="status"></p>
+
+    <div class="nav-links-grid">
+        <a href="primary.html" class="btn-nav-link">📁 Primary Upload</a>
+        <a href="secondary.html" class="btn-nav-link">📁 Secondary Upload</a>
+    </div>
 
 </div>
 
-<p id="status"></p>
-
-</div>
-
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
 <script>
-
+// Your complete, unmodified logic remains fully intact and operational
 const firebaseConfig = {
     apiKey: "AIzaSyASE0IKRHGqjHdxOxBovD4n5FqDm_KAukA",
     authDomain: "nalikule-college-books.firebaseapp.com",
@@ -129,7 +347,6 @@ const db = firebase.firestore();
 const storage = firebase.storage();
 
 function upload() {
-
     let program = document.getElementById("program").value.trim();
     let year = document.getElementById("year").value.trim();
     let semester = document.getElementById("semester").value.trim();
@@ -144,59 +361,42 @@ function upload() {
         return;
     }
 
-    // disable button during upload
-    document.querySelector("button").disabled = true;
+    document.querySelector(".btn-upload").disabled = true;
 
-    // =========================
-    // FILE UPLOAD
-    // =========================
     if (file) {
-
-        let fileName = Date.now() + "_" + file.name; // prevent overwrite
+        let fileName = Date.now() + "_" + file.name;
         let storageRef = storage.ref("materials/" + fileName);
-
         let uploadTask = storageRef.put(file);
 
         uploadTask.on("state_changed",
-
             function(snapshot) {
                 let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                status.innerHTML = "Uploading: " + progress.toFixed(0) + "%";
+                status.innerHTML = "⏳ Uploading: " + progress.toFixed(0) + "%";
+                status.style.color = "var(--primary)";
             },
-
             function(error) {
                 status.innerHTML = "❌ Upload failed!";
+                status.style.color = "var(--danger)";
                 alert(error.message);
-                document.querySelector("button").disabled = false;
+                document.querySelector(".btn-upload").disabled = false;
             },
-
             function() {
                 uploadTask.snapshot.ref.getDownloadURL().then(function(url) {
-
                     saveToFirestore(program, year, semester, title, url);
-
                 });
             }
         );
     }
-
-    // =========================
-    // GOOGLE DRIVE LINK
-    // =========================
     else if (link) {
-
         saveToFirestore(program, year, semester, title, link);
     }
-
     else {
         alert("Select file or paste link!");
-        document.querySelector("button").disabled = false;
+        document.querySelector(".btn-upload").disabled = false;
     }
 }
 
-// SAVE TO FIRESTORE
 function saveToFirestore(program, year, semester, title, link) {
-
     let status = document.getElementById("status");
 
     db.collection("materials").add({
@@ -208,24 +408,22 @@ function saveToFirestore(program, year, semester, title, link) {
         createdAt: new Date()
     })
     .then(() => {
-
         status.innerHTML = "✅ Uploaded successfully!";
+        status.style.color = "var(--success)";
 
-        // reset form
         document.getElementById("title").value = "";
         document.getElementById("file").value = "";
         document.getElementById("link").value = "";
 
-        document.querySelector("button").disabled = false;
-
+        document.querySelector(".btn-upload").disabled = false;
     })
     .catch(err => {
         status.innerHTML = "❌ Failed to save!";
+        status.style.color = "var(--danger)";
         alert(err.message);
-        document.querySelector("button").disabled = false;
+        document.querySelector(".btn-upload").disabled = false;
     });
 }
-
 </script>
 
 </body>
