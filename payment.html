@@ -123,11 +123,16 @@
         background: #219653;
     }
 
+    button:active {
+        transform: scale(0.99);
+    }
+
     #loadingScreen {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
         background: #f4f6f9;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         z-index: 9999;
@@ -145,15 +150,22 @@
     }
 
     @media (max-width: 480px) {
-        .main-content { padding: 12px; align-items: flex-start; }
-        .container { padding: 20px 15px; box-shadow: none; border: 1px solid #e1e4e8; }
+        .main-content {
+            padding: 12px;
+            align-items: flex-start;
+        }
+        .container {
+            padding: 20px 15px;
+            box-shadow: none;
+            border: 1px solid #e1e4e8;
+        }
     }
 </style>
 </head>
 
 <body>
 
-<div id="loadingScreen">Verifying library access permissions...</div>
+<div id="loadingScreen">Checking access status...</div>
 
 <header>
     <h1>Student Payment Portal</h1>
@@ -161,6 +173,7 @@
 
 <main class="main-content">
     <div class="container">
+
         <div class="info">
             <h3>Payment Instructions</h3>
             <p><span>Registration Amount:</span> <span class="amount-tag">K50</span></p>
@@ -176,6 +189,7 @@
 
             <button onclick="submitPayment()">Submit Verification Details</button>
         </div>
+
     </div>
 </main>
 
@@ -208,18 +222,19 @@ auth.onAuthStateChanged((user) => {
         return;
     }
 
+    // Step 1: Fetch details of logged-in student
     db.collection("students").doc(user.uid).get()
     .then((studentDoc) => {
         if (!studentDoc.exists) {
             hideLoading();
-            return;
+            return null;
         }
 
         let regNo = studentDoc.data().regNumber;
-        document.getElementById("name").value = `${studentDoc.data().firstName} ${studentDoc.data().lastName}`;
+        document.getElementById("name").value = `${studentDoc.data().firstName || ''} ${studentDoc.data().lastName || ''}`;
         document.getElementById("regNumber").value = regNo;
 
-        // Fetch user's most recent payment record
+        // Step 2: Grab the most recently submitted payment log
         return db.collection("payments")
             .where("regNumber", "==", regNo)
             .orderBy("createdAt", "desc")
@@ -228,39 +243,40 @@ auth.onAuthStateChanged((user) => {
     })
     .then((paymentQuery) => {
         if (paymentQuery && !paymentQuery.empty) {
-            let latestPayment = paymentQuery.docs[0].data();
+            let payData = paymentQuery.docs[0].data();
             let currentTime = new Date().getTime();
 
-            if (latestPayment.status === "approved") {
-                let approvedTime = latestPayment.approvedAt.toDate().getTime();
+            // 1. STATUS IS APPROVED
+            if (payData.status === "approved") {
+                let approvedTime = payData.approvedAt ? payData.approvedAt.toDate().getTime() : currentTime;
                 let fortyEightHours = 48 * 60 * 60 * 1000;
 
                 if (currentTime - approvedTime < fortyEightHours) {
                     window.location.href = "materials.html";
-                    return;
-                }
-            } 
-            else if (latestPayment.status === "pending") {
-                let createdTime = latestPayment.createdAt.toDate().getTime();
-                let twoHours = 2 * 60 * 60 * 1000;
-
-                // ⏳ GRACE TIME CHECK: If within 2 hours of submission, let them view materials directly
-                if (currentTime - createdTime < twoHours) {
-                    window.location.href = "materials.html";
-                    return;
-                } else {
-                    alert("Your 2-hour grace period has expired. Please wait for Admin approval.");
+                    return; // Keeps loader running up until transition redirects
                 }
             }
-            else if (latestPayment.status === "rejected") {
-                // Keep them on this page if rejected by Admin panel
-                console.log("Previous transaction submission was rejected by administration.");
+            // 2. STATUS IS PENDING (GRANT A 1.5 HOUR GRACE WINDOW)
+            else if (payData.status === "pending") {
+                if (payData.createdAt) {
+                    let createdTime = payData.createdAt.toDate().getTime();
+                    let oneAndHalfHours = 1.5 * 60 * 60 * 1000; // 90 minutes in ms
+
+                    if (currentTime - createdTime < oneAndHalfHours) {
+                        window.location.href = "materials.html";
+                        return; // Bypasses dashboard view during grace timeframe
+                    }
+                }
+            }
+            // 3. STATUS IS REJECTED
+            else if (payData.status === "rejected") {
+                console.log("Prior verification attempt rejected.");
             }
         }
         hideLoading();
     })
     .catch((err) => {
-        console.error("Routing validation error: ", err);
+        console.error("Error during execution checklist check: ", err);
         hideLoading();
     });
 });
@@ -296,8 +312,11 @@ function submitPayment() {
             approvedAt: null
         })
         .then(() => {
-            alert("✅ Reference received! You have a 2-hour grace period to access materials while we verify your payment.");
+            alert("✅ Payment submitted! Entering temporary 1.5-hour grace window...");
             window.location.href = "materials.html";
+        })
+        .catch((err) => {
+            alert("Submission error: " + err.message);
         });
     });
 }
