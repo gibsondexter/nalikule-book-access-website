@@ -1,208 +1,452 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Materials</title>
 
+
+
 <style>
+
 body {
-    font-family: Arial;
-    background: #f4f6f9;
-    margin: 0;
+
+    font-family: Arial;
+
+    background: #f4f6f9;
+
+    margin: 0;
+
 }
+
+
 
 header {
-    background: #2c3e50;
-    color: white;
-    padding: 15px;
-    text-align: center;
+
+    background: #2c3e50;
+
+    color: white;
+
+    padding: 15px;
+
+    text-align: center;
+
 }
+
+
 
 .container {
-    width: 90%;
-    max-width: 800px;
-    margin: 20px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
+
+    width: 90%;
+
+    max-width: 800px;
+
+    margin: 20px auto;
+
+    background: white;
+
+    padding: 20px;
+
+    border-radius: 10px;
+
 }
+
+
 
 h2 {
-    text-align: center;
+
+    text-align: center;
+
 }
+
+
 
 .material {
-    padding: 15px;
-    margin: 10px 0;
-    background: #f1f3f6;
-    border-left: 5px solid #3498db;
-    border-radius: 8px;
+
+    padding: 15px;
+
+    margin: 10px 0;
+
+    background: #f1f3f6;
+
+    border-left: 5px solid #3498db;
+
+    border-radius: 8px;
+
 }
 
+
+
 a {
-    text-decoration: none;
-    color: #2980b9;
-    font-weight: bold;
+
+    text-decoration: none;
+
+    color: #2980b9;
+
+    font-weight: bold;
+
 }
+
 </style>
+
 </head>
+
+
 
 <body>
 
+
+
 <header>
-    <h1>Course Materials</h1>
+
+    <h1>Course Materials</h1>
+
 </header>
+
+
 
 <div class="container">
 
-    <h2 id="title"></h2>
 
-    <div id="materialsList"></div>
+
+    <h2 id="title"></h2>
+
+
+
+    <div id="materialsList"></div>
+
+
 
 </div>
 
+
+
 <!-- FIREBASE -->
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+
 
 <script>
 
+
+
 // 🔥 Firebase Config
+
 const firebaseConfig = {
-    apiKey: "AIzaSyASE0IKRHGqjHdxOxBovD4n5FqDm_KAukA",
-    authDomain: "nalikule-college-books.firebaseapp.com",
-    projectId: "nalikule-college-books",
-    storageBucket: "nalikule-college-books.appspot.com",
-    messagingSenderId: "726295406083",
-    appId: "1:726295406083:web:eaf13bfb0bfe59316a1036"
+
+    apiKey: "AIzaSyASE0IKRHGqjHdxOxBovD4n5FqDm_KAukA",
+
+    authDomain: "nalikule-college-books.firebaseapp.com",
+
+    projectId: "nalikule-college-books",
+
+    storageBucket: "nalikule-college-books.appspot.com",
+
+    messagingSenderId: "726295406083",
+
+    appId: "1:726295406083:web:eaf13bfb0bfe59316a1036"
+
 };
 
+
+
 firebase.initializeApp(firebaseConfig);
+
 const db = firebase.firestore();
 
+
+
 // 📥 GET USER SELECTION
+
 let system = localStorage.getItem("system");
 
+
+// PUT THIS CODE INSIDE SCRIPT TAG OF YOUR MATERIALS.HTML PAGE
+auth.onAuthStateChanged((user) => {
+    if (!user) { window.location.href = "index.html"; return; }
+
+    db.collection("students").doc(user.uid).get().then(doc => {
+        let regNo = doc.data().regNumber;
+
+        // Watch payment record live for instant rejection/timeout kicking
+        db.collection("payments")
+          .where("regNumber", "==", regNo)
+          .orderBy("createdAt", "desc").limit(1)
+          .onSnapshot((snapshot) => {
+              if (snapshot.empty) { window.location.href = "payment.html"; return; }
+              
+              let payData = snapshot.docs[0].data();
+              let now = new Date().getTime();
+
+              if (payData.status === "rejected") {
+                  alert("Your payment verification was rejected by administration.");
+                  window.location.href = "payment.html";
+              } 
+              else if (payData.status === "pending") {
+                  let created = payData.createdAt.toDate().getTime();
+                  if (now - created > (2 * 60 * 60 * 1000)) {
+                      alert("Grace window closed. Please wait for admin approval.");
+                      window.location.href = "payment.html";
+                  }
+              }
+              else if (payData.status === "approved") {
+                  let approved = payData.approvedAt.toDate().getTime();
+                  if (now - approved > (48 * 60 * 60 * 1000)) {
+                      alert("Your 48-hour access token has expired.");
+                      window.location.href = "payment.html";
+                  }
+              }
+          });
+    });
+});
 // ✅ FIX 1: HANDLE MISSING SYSTEM
+
 if (!system) {
-    document.getElementById("title").innerText = "⚠ No selection made";
+
+    document.getElementById("title").innerText = "⚠ No selection made";
+
 }
+
+
 
 let title = document.getElementById("title");
 
+
+
 // 📌 PRIMARY
+
 if(system === "primary") {
 
-    let std = localStorage.getItem("std");
-    title.innerText = "📚 " + std;
+
+
+    let std = localStorage.getItem("std");
+
+    title.innerText = "📚 " + std;
+
+
 
 }
+
+
 
 // 📌 SECONDARY
+
 else if(system === "secondary") {
 
-    let form = localStorage.getItem("form");
-    title.innerText = "📚 " + form;
+
+
+    let form = localStorage.getItem("form");
+
+    title.innerText = "📚 " + form;
+
+
 
 }
+
+
 
 // 📌 COLLEGE (UNCHANGED)
+
 else {
 
-    let program = localStorage.getItem("program");
-    let year = localStorage.getItem("year");
-    let semester = localStorage.getItem("semester");
 
-    title.innerText = `📚 ${program} | ${year} | ${semester}`;
+
+    let program = localStorage.getItem("program");
+
+    let year = localStorage.getItem("year");
+
+    let semester = localStorage.getItem("semester");
+
+
+
+    title.innerText = `📚 ${program} | ${year} | ${semester}`;
+
 }
+
+
 
 // 📦 LOAD MATERIALS
+
 function loadMaterials() {
 
-    let container = document.getElementById("materialsList");
 
-    // Loading message
-    container.innerHTML = "<p>⏳ Loading materials...</p>";
 
-    let query;
+    let container = document.getElementById("materialsList");
 
-    if(system === "primary") {
 
-        let std = localStorage.getItem("std");
 
-        query = db.collection("primary_materials")
-                  .where("std", "==", std);
+    // Loading message
 
-    }
-    else if(system === "secondary") {
+    container.innerHTML = "<p>⏳ Loading materials...</p>";
 
-        let form = localStorage.getItem("form");
 
-        query = db.collection("secondary_materials")
-                  .where("form", "==", form);
 
-    }
-    else {
+    let query;
 
-        let program = localStorage.getItem("program");
-        let year = localStorage.getItem("year");
-        let semester = localStorage.getItem("semester");
 
-        query = db.collection("materials")
-                  .where("program", "==", program)
-                  .where("year", "==", year)
-                  .where("semester", "==", semester);
-    }
 
-    // 🔥 EXECUTE QUERY
-    query.get()
-    .then(snapshot => {
-        
-        container.innerHTML = "";
+    if(system === "primary") {
 
-        if (snapshot.empty) {
-            container.innerHTML = "<p>❌ No materials found.</p>";
-            return;
-        }
 
-        snapshot.forEach(doc => {
 
-            let data = doc.data();
+        let std = localStorage.getItem("std");
 
-            // ✅ FIX 2: SAFE LINK
-            let link = data.link || "";
 
-            // Detect file type
-            let icon = "📄";
 
-            if (link.includes(".pdf")) icon = "📕";
-            else if (link.includes(".ppt") || link.includes(".pptx")) icon = "📊";
-            else if (link.includes(".jpg") || link.includes(".png")) icon = "🖼️";
+        query = db.collection("primary_materials")
 
-            let div = document.createElement("div");
-            div.className = "material";
+                  .where("std", "==", std);
 
-            div.innerHTML = `
-                <strong>${icon} ${data.title}</strong><br>
-                <a href="${link}" target="_blank">Open / Download</a>
-            `;
 
-            container.appendChild(div);
 
-        });
+    }
 
-    })
-    .catch(error => {
-        container.innerHTML = "<p>⚠ Error loading materials</p>";
-        console.log(error);
-    });
+    else if(system === "secondary") {
+
+
+
+        let form = localStorage.getItem("form");
+
+
+
+        query = db.collection("secondary_materials")
+
+                  .where("form", "==", form);
+
+
+
+    }
+
+    else {
+
+
+
+        let program = localStorage.getItem("program");
+
+        let year = localStorage.getItem("year");
+
+        let semester = localStorage.getItem("semester");
+
+
+
+        query = db.collection("materials")
+
+                  .where("program", "==", program)
+
+                  .where("year", "==", year)
+
+                  .where("semester", "==", semester);
+
+    }
+
+
+
+    // 🔥 EXECUTE QUERY
+
+    query.get()
+
+    .then(snapshot => {
+
+        
+
+        container.innerHTML = "";
+
+
+
+        if (snapshot.empty) {
+
+            container.innerHTML = "<p>❌ No materials found.</p>";
+
+            return;
+
+        }
+
+
+
+        snapshot.forEach(doc => {
+
+
+
+            let data = doc.data();
+
+
+
+            // ✅ FIX 2: SAFE LINK
+
+            let link = data.link || "";
+
+
+
+            // Detect file type
+
+            let icon = "📄";
+
+
+
+            if (link.includes(".pdf")) icon = "📕";
+
+            else if (link.includes(".ppt") || link.includes(".pptx")) icon = "📊";
+
+            else if (link.includes(".jpg") || link.includes(".png")) icon = "🖼️";
+
+
+
+            let div = document.createElement("div");
+
+            div.className = "material";
+
+
+
+            div.innerHTML = `
+
+                <strong>${icon} ${data.title}</strong><br>
+
+                <a href="${link}" target="_blank">Open / Download</a>
+
+            `;
+
+
+
+            container.appendChild(div);
+
+
+
+        });
+
+
+
+    })
+
+    .catch(error => {
+
+        container.innerHTML = "<p>⚠ Error loading materials</p>";
+
+        console.log(error);
+
+    });
+
 }
 
+
+
 // 🚀 RUN
+
 loadMaterials();
+
+
 
 </script>
 
+
+
 </body>
+
 </html>
