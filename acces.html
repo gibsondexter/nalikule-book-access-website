@@ -141,6 +141,11 @@ function approve(id) {
     loadPayments();
 }
 
+    db.collection("payments").doc(transactionId).update({
+    status: "approved",
+    approvedAt: firebase.firestore.FieldValue.serverTimestamp() // Crucial for timing check!
+});
+
 
 // REJECT PAYMENT
 function reject(id) {
