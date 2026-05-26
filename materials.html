@@ -3,170 +3,93 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Course Materials</title>
+<title>Materials</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
+body {
+    font-family: Arial;
+    background: #f4f6f9;
+    margin: 0;
+}
 
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: #f4f6f9;
-        color: #333;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
 
-    header {
-        background: #2c3e50;
-        color: white;
-        padding: 20px 15px;
-        text-align: center;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
 
-    header h1 {
-        font-size: 1.5rem;
-        font-weight: 600;
-    }
+h2 {
+    text-align: center;
+}
 
-    .main-content {
-        flex: 1;
-        padding: 20px;
-        display: flex;
-        justify-content: center;
-        width: 100%;
-    }
+.material {
+    padding: 15px;
+    margin: 10px 0;
+    background: #f1f3f6;
+    border-left: 5px solid #3498db;
+    border-radius: 8px;
+}
 
-    .container {
-        width: 100%;
-        max-width: 800px;
-        background: white;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    }
+a {
+    text-decoration: none;
+    color: #2980b9;
+    font-weight: bold;
+}
 
-    h2 {
-        text-align: center;
-        color: #2c3e50;
-        margin-bottom: 25px;
-        font-size: 1.4rem;
-        border-bottom: 2px solid #f4f6f9;
-        padding-bottom: 10px;
-    }
-
-    #materialsList {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .material {
-        padding: 15px 20px;
-        background: #f8fafc;
-        border-left: 5px solid #3498db;
-        border-radius: 6px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        transition: transform 0.2s, box-shadow 0.2s;
-        border: 1px solid #e2e8f0;
-        border-left-width: 5px;
-    }
-
-    .material:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-    }
-
-    .material-info {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-size: 1rem;
-        font-weight: 500;
-        color: #334155;
-    }
-
-    .material-icon {
-        font-size: 1.4rem;
-    }
-
-    a {
-        text-decoration: none;
-        color: #fff;
-        background: #3498db;
-        padding: 8px 16px;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        transition: background 0.2s;
-    }
-
-    a:hover {
-        background: #2980b9;
-    }
-
-    #securityOverlay {
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: #f4f6f9;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        font-size: 1.2rem;
-        color: #2c3e50;
-        font-weight: bold;
-    }
-
-    footer {
-        background-color: #002147;
-        color: rgba(255, 255, 255, 0.8);
-        text-align: center;
-        padding: 15px;
-        font-size: 0.85rem;
-        margin-top: auto;
-    }
-
-    @media (max-width: 600px) {
-        .main-content { padding: 12px; }
-        .container { padding: 15px; box-shadow: none; border: 1px solid #e1e4e8; }
-        .material { flex-direction: column; align-items: flex-start; gap: 12px; }
-        a { width: 100%; text-align: center; }
-    }
+/* 🔐 SECURITY GUARD SCREEN MODAL OVERLAY */
+#securityOverlay {
+    position: fixed;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: #f4f6f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    font-size: 1.2rem;
+    color: #2c3e50;
+    font-weight: bold;
+}
 </style>
 </head>
 
 <body>
 
+<!-- 🔒 Temporary barrier while checking permission parameters -->
 <div id="securityOverlay">Verifying access authentication permissions...</div>
 
 <header>
     <h1>Course Materials</h1>
 </header>
 
-<main class="main-content">
-    <div class="container">
-        <h2 id="title">📚 Loading View...</h2>
-        <div id="materialsList"></div>
-    </div>
-</main>
+<div class="container">
 
-<footer>
-    <p>© 2026 DEXTER-LIBRARY | Developed by Dexter</p>
-</footer>
+    <h2 id="title">📚 Loading View...</h2>
 
+    <div id="materialsList"></div>
+
+</div>
+
+<!-- FIREBASE (Added SDK Compat packages for Auth and Database) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
+
+// 🔥 Firebase Config
 const firebaseConfig = {
     apiKey: "AIzaSyASE0IKRHGqjHdxOxBovD4n5FqDm_KAukA",
     authDomain: "nalikule-college-books.firebaseapp.com",
@@ -178,24 +101,27 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const auth = firebase.auth();
+const auth = firebase.auth(); // Target Auth instantiation
 
+// 📥 RUN PRIVILEGE VERIFICATION LIVE CHECKS ON STATE CHANGE
 auth.onAuthStateChanged((user) => {
     if (!user) {
+        alert("🔒 Please log in to view library documents.");
         window.location.href = "index.html";
         return;
     }
 
+    // Step A: Find the user's registration identifier profile
     db.collection("students").doc(user.uid).get().then(studentDoc => {
         if (!studentDoc.exists) {
-            alert("Profile entry record missing.");
+            alert("❌ Student profile record missing from system repository.");
             window.location.href = "index.html";
             return;
         }
 
         let regNo = studentDoc.data().regNumber;
 
-        // Real-time live background monitoring listener
+        // Step B: Connect a Live background listener to watch for status changes instantly
         db.collection("payments")
           .where("regNumber", "==", regNo)
           .orderBy("createdAt", "desc")
@@ -203,7 +129,7 @@ auth.onAuthStateChanged((user) => {
           .onSnapshot((snapshot) => {
               
               if (snapshot.empty) {
-                  alert("❌ No transaction entry on file. Redirecting to payment portal...");
+                  alert("❌ No transaction records identified. Redirecting to payment portal...");
                   window.location.href = "payment.html";
                   return;
               }
@@ -211,26 +137,26 @@ auth.onAuthStateChanged((user) => {
               let paymentData = snapshot.docs[0].data();
               let currentTime = new Date().getTime();
 
-              // 🚫 CASE 1: ADMIN REJECTED
+              // 🚫 LAYER 1: IF REJECTED
               if (paymentData.status === "rejected") {
-                  alert("❌ Access Denied: Your verification data was rejected by the Admin desk.");
+                  alert("❌ Access Denied: Your registration was rejected by the admin panel.");
                   window.location.href = "payment.html";
                   return;
               } 
               
-              // ⏳ CASE 2: PENDING REVIEWS (1-HOUR LIMIT FORCE EXPIRE)
+              // ⏳ LAYER 2: IF PENDING (Check 1-Hour Grace Window Limit)
               else if (paymentData.status === "pending") {
                   let submissionTime = paymentData.createdAt.toDate().getTime();
-                  let oneHour = 1 * 60 * 60 * 1000; // 1 Hour rule layout math
+                  let oneHour = 1 * 60 * 60 * 1000; // 1 Hour equation metric
 
                   if (currentTime - submissionTime > oneHour) {
-                      alert("⏳ Grace window expired! Your 1-hour temporary viewing window closed before Admin authorization confirmation.");
+                      alert("⏳ Grace window expired! Your 1-hour temporary viewing window has closed.");
                       window.location.href = "payment.html";
                       return;
                   }
               }
               
-              // ⏱️ CASE 3: APPROVED ACCESS TOKEN (48-HOUR FORCE EXPIRE)
+              // ⏱️ LAYER 3: IF APPROVED (Check 48-Hour Clear Token Window Limit)
               else if (paymentData.status === "approved") {
                   if (paymentData.approvedAt) {
                       let approvalTime = paymentData.approvedAt.toDate().getTime();
@@ -247,30 +173,38 @@ auth.onAuthStateChanged((user) => {
                   }
               }
 
-              // Drop security shield and process display
+              // 🎉 CRITERIA MET: Remove curtain shield, run headers, extract assets
               document.getElementById("securityOverlay").style.display = "none";
-              setupTitle();
+              setupHeaderTitle();
               loadMaterials();
+
           }, (error) => {
-              console.error("Live monitoring exception: ", error);
+              console.error("Live listener pipeline execution failure:", error);
+              // Handle index errors or missing parameters gracefully
+              alert("Configuration connection processing error. Please contact administrative support.");
           });
     });
 });
 
-function setupTitle() {
+// 📌 RENDER SCREEN HEADER
+function setupHeaderTitle() {
     let system = localStorage.getItem("system");
     let title = document.getElementById("title");
 
     if (!system) {
-        title.innerText = "⚠ No academic layout selection discovered";
+        title.innerText = "⚠ No selection made";
         return;
     }
 
     if(system === "primary") {
-        title.innerText = "📚 " + localStorage.getItem("std");
-    } else if(system === "secondary") {
-        title.innerText = "📚 " + localStorage.getItem("form");
-    } else {
+        let std = localStorage.getItem("std");
+        title.innerText = "📚 " + std;
+    } 
+    else if(system === "secondary") {
+        let form = localStorage.getItem("form");
+        title.innerText = "📚 " + form;
+    } 
+    else {
         let program = localStorage.getItem("program");
         let year = localStorage.getItem("year");
         let semester = localStorage.getItem("semester");
@@ -278,30 +212,40 @@ function setupTitle() {
     }
 }
 
+// 📦 LOAD MATERIALS FROM COLLECTION ARRAYS
 function loadMaterials() {
     let system = localStorage.getItem("system");
     let container = document.getElementById("materialsList");
-    container.innerHTML = "<p>⏳ Fetching academic content indices...</p>";
 
+    container.innerHTML = "<p>⏳ Loading materials...</p>";
     let query;
 
     if(system === "primary") {
-        query = db.collection("primary_materials").where("std", "==", localStorage.getItem("std"));
-    } else if(system === "secondary") {
-        query = db.collection("secondary_materials").where("form", "==", localStorage.getItem("form"));
-    } else {
+        let std = localStorage.getItem("std");
+        query = db.collection("primary_materials").where("std", "==", std);
+    }
+    else if(system === "secondary") {
+        let form = localStorage.getItem("form");
+        query = db.collection("secondary_materials").where("form", "==", form);
+    }
+    else {
+        let program = localStorage.getItem("program");
+        let year = localStorage.getItem("year");
+        let semester = localStorage.getItem("semester");
+
         query = db.collection("materials")
-                  .where("program", "==", localStorage.getItem("program"))
-                  .where("year", "==", localStorage.getItem("year"))
-                  .where("semester", "==", localStorage.getItem("semester"));
+                  .where("program", "==", program)
+                  .where("year", "==", year)
+                  .where("semester", "==", semester);
     }
 
+    // 🔥 EXECUTE QUERY INTERFACE
     query.get()
     .then(snapshot => {
         container.innerHTML = "";
 
         if (snapshot.empty) {
-            container.innerHTML = "<p>❌ No document modules linked to this bracket category yet.</p>";
+            container.innerHTML = "<p>❌ No materials found for your section selection.</p>";
             return;
         }
 
@@ -316,19 +260,17 @@ function loadMaterials() {
 
             let div = document.createElement("div");
             div.className = "material";
+
             div.innerHTML = `
-                <div class="material-info">
-                    <span class="material-icon">${icon}</span>
-                    <span>${data.title}</span>
-                </div>
-                <a href="${link}" target="_blank">View File</a>
+                <strong>${icon} ${data.title}</strong><br>
+                <a href="${link}" target="_blank">Open / Download</a>
             `;
             container.appendChild(div);
         });
     })
     .catch(error => {
-        container.innerHTML = "<p>⚠ Data loading exception encountered.</p>";
-        console.error(error);
+        container.innerHTML = "<p>⚠ Error loading materials database references.</p>";
+        console.log(error);
     });
 }
 </script>
