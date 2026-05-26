@@ -35,7 +35,7 @@ a { text-decoration: none; color: #2980b9; font-weight: bold; }
 </header>
 
 <div class="container">
-    <h2 id="title">📚 Loading...</h2>
+    <h2 id="title">📚 Loading Layout View...</h2>
     <div id="materialsList"></div>
 </div>
 
@@ -57,7 +57,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-// Set Title Selection Immediately
+// Try to set text immediately from memory if available
 setupTitle();
 
 auth.onAuthStateChanged((user) => {
@@ -134,24 +134,37 @@ function runSecurityChecks(regNo) {
 
 function bypassShieldAndLoad() {
     document.getElementById("securityOverlay").style.display = "none";
+    // Double-check title parameters right before rendering
+    setupTitle();
     loadMaterials();
 }
 
-// ✅ FIXED TITLE DISPLAY TO SHOW SELECTED MATERIAL CONFIG
+// 🧠 NEW ROBUST TITLE FALLBACK ENGINE
 function setupTitle() {
     let system = localStorage.getItem("system");
     let title = document.getElementById("title");
-    if (!system) { title.innerText = "⚠ No selection made"; return; }
+
+    let program = localStorage.getItem("program");
+    let year = localStorage.getItem("year");
+    let semester = localStorage.getItem("semester");
+
+    // Fix: If system flag is blank but college variables exist, automatically correct it
+    if (!system && program && year && semester) {
+        system = "college";
+        localStorage.setItem("system", "college");
+    }
+
+    if (!system) { 
+        title.innerText = "⚠ No selection made"; 
+        return; 
+    }
 
     if(system === "primary") {
-        title.innerText = "📚 " + localStorage.getItem("std");
+        title.innerText = "📚 " + (localStorage.getItem("std") || "Primary Materials");
     } else if(system === "secondary") {
-        title.innerText = "📚 " + localStorage.getItem("form");
+        title.innerText = "📚 " + (localStorage.getItem("form") || "Secondary Materials");
     } else {
-        let program = localStorage.getItem("program") || "";
-        let year = localStorage.getItem("year") || "";
-        let semester = localStorage.getItem("semester") || "";
-        title.innerText = `📚 ${program} | ${year} | ${semester}`;
+        title.innerText = `📚 ${program || "Selected Program"} | ${year || "Year"} | ${semester || "Semester"}`;
     }
 }
 
@@ -175,7 +188,7 @@ function loadMaterials() {
     query.get().then(snapshot => {
         container.innerHTML = "";
         if (snapshot.empty) {
-            container.innerHTML = "<p>❌ No materials found.</p>";
+            container.innerHTML = "<p>❌ No materials found matching this exact combination profile.</p>";
             return;
         }
 
@@ -196,8 +209,9 @@ function loadMaterials() {
             `;
             container.appendChild(div);
         });
-    }).catch(() => {
-        container.innerHTML = "<p>⚠ Error loading materials.</p>";
+    }).catch((err) => {
+        console.error("Loading runtime exception: ", err);
+        container.innerHTML = "<p>⚠ Error loading materials collection.</p>";
     });
 }
 </script>
