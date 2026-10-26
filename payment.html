@@ -3,198 +3,305 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Payment Portal</title>
+
+<title>DEXTER-LIBRARY | Student Payment</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: #f4f6f9;
-        color: #333;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
+:root {
+    --primary: #123b66;
+    --primary-dark: #0b2948;
+    --green: #16834a;
+    --background: #f3f6fa;
+    --text: #253247;
+    --muted: #64748b;
+    --border: #e2e8f0;
+}
 
-    header {
-        background: #2c3e50;
-        color: white;
-        text-align: center;
-        padding: 20px 15px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--background);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
 
-    header h1 {
-        font-size: 1.5rem;
-        font-weight: 600;
-    }
+header {
+    background: var(--primary);
+    color: white;
+    padding: 20px 16px;
+    text-align: center;
+}
 
-    .main-content {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        width: 100%;
+header h1 {
+    font-size: 23px;
+    font-weight: 600;
+}
+
+header p {
+    font-size: 13px;
+    margin-top: 6px;
+    color: #dce8f5;
+}
+
+main {
+    flex: 1;
+    width: 100%;
+    max-width: 520px;
+    margin: 30px auto;
+    padding: 0 15px;
+}
+
+.container {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 3px 15px rgba(20, 40, 70, 0.07);
+}
+
+.heading {
+    font-size: 20px;
+    margin-bottom: 7px;
+    color: var(--primary);
+}
+
+.description {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 22px;
+}
+
+.student-info {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.student-info h3 {
+    font-size: 15px;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
+.detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+}
+
+.detail:last-child {
+    border-bottom: none;
+}
+
+.detail span:first-child {
+    color: var(--muted);
+}
+
+.detail strong {
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.amount-box {
+    background: #edf8f1;
+    border: 1px solid #c9ead6;
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.amount-box p {
+    color: #42634e;
+    font-size: 14px;
+}
+
+.amount {
+    color: var(--green);
+    font-size: 34px;
+    font-weight: 700;
+    margin: 7px 0;
+}
+
+.amount-box small {
+    color: #42634e;
+    font-size: 12px;
+}
+
+.payment-note {
+    background: #fff8e8;
+    border-left: 4px solid #e7a629;
+    padding: 12px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #6b531d;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background: #116b3c;
+}
+
+button:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+#message {
+    display: none;
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 7px;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+#message.error {
+    display: block;
+    background: #fff0f0;
+    color: #a32323;
+}
+
+#message.success {
+    display: block;
+    background: #edf8f1;
+    color: #176b3a;
+}
+
+#message.info {
+    display: block;
+    background: #edf4ff;
+    color: #174b83;
+}
+
+footer {
+    background: var(--primary-dark);
+    color: #dce8f5;
+    text-align: center;
+    padding: 16px 10px;
+    font-size: 12px;
+    margin-top: auto;
+}
+
+#loadingScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: var(--background);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 25px;
+    color: var(--primary);
+    font-size: 15px;
+}
+
+@media (max-width: 480px) {
+    main {
+        margin: 18px auto;
     }
 
     .container {
-        width: 100%;
-        max-width: 480px;
-        background: white;
-        padding: 30px 25px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        padding: 19px;
     }
 
-    .info {
-        background: #fdfefe;
-        border: 1px solid #e1e8ed;
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
+    header h1 {
+        font-size: 21px;
     }
-
-    .info h3 {
-        color: #2c3e50;
-        margin-bottom: 12px;
-        font-size: 1.1rem;
-        border-bottom: 2px solid #f4f6f9;
-        padding-bottom: 5px;
-    }
-
-    .info p {
-        font-size: 0.95rem;
-        margin: 8px 0;
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .amount-tag {
-        font-size: 1.2rem;
-        color: #27ae60;
-        font-weight: bold;
-    }
-
-    .airtel { color: #e74c3c; font-weight: bold; }
-    .mpamba { color: #2980b9; font-weight: bold; }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    input {
-        width: 100%;
-        padding: 12px 15px;
-        border: 1px solid #ccd1d9;
-        border-radius: 6px;
-        font-size: 0.95rem;
-        outline: none;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    input:focus {
-        border-color: #27ae60;
-        box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.15);
-    }
-
-    button {
-        width: 100%;
-        padding: 14px;
-        background: #27ae60;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-        margin-top: 8px;
-        transition: background 0.2s, transform 0.1s;
-    }
-
-    button:hover {
-        background: #219653;
-    }
-
-    button:active {
-        transform: scale(0.99);
-    }
-
-    #loadingScreen {
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: #f4f6f9;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        font-size: 1.2rem;
-        color: #2c3e50;
-    }
-
-    footer {
-        background-color: #002147;
-        color: rgba(255, 255, 255, 0.8);
-        text-align: center;
-        padding: 15px;
-        font-size: 0.85rem;
-        margin-top: auto;
-    }
-
-    @media (max-width: 480px) {
-        .main-content {
-            padding: 12px;
-            align-items: flex-start;
-        }
-        .container {
-            padding: 20px 15px;
-            box-shadow: none;
-            border: 1px solid #e1e4e8;
-        }
-    }
+}
 </style>
 </head>
 
 <body>
 
-<div id="loadingScreen">Checking access status...</div>
+<div id="loadingScreen">
+    Checking your student account...
+</div>
 
 <header>
-    <h1>Student Payment Portal</h1>
+    <h1>DEXTER-LIBRARY</h1>
+    <p>Student Payment Portal</p>
 </header>
 
-<main class="main-content">
-    <div class="container">
+<main>
+    <section class="container">
 
-        <div class="info">
-            <h3>Payment Instructions</h3>
-            <p><span>Registration Amount:</span> <span class="amount-tag">K50</span></p>
-            <p><span>Airtel Money No:</span> <span class="airtel">0991744801</span></p>
-            <p><span>TNM Mpamba No:</span> <span class="mpamba">0881744801</span></p>
-            <p><span>Reference Note:</span> <strong>Your Reg Number</strong></p>
+        <h2 class="heading">Library Access Payment</h2>
+
+        <p class="description">
+            Pay your library access fee securely through PayChangu.
+            After successful verification, you will be redirected to
+            your learning materials.
+        </p>
+
+        <div class="student-info">
+            <h3>Student Information</h3>
+
+            <div class="detail">
+                <span>Full name</span>
+                <strong id="studentName">Loading...</strong>
+            </div>
+
+            <div class="detail">
+                <span>Registration number</span>
+                <strong id="studentReg">Loading...</strong>
+            </div>
+
+            <div class="detail">
+                <span>Email address</span>
+                <strong id="studentEmail">Loading...</strong>
+            </div>
         </div>
 
-        <div class="form-group">
-            <input type="text" id="name" placeholder="Full Name">
-            <input type="text" id="regNumber" placeholder="Registration Number">
-            <input type="text" id="transactionId" placeholder="Transaction ID / Message">
-
-            <button onclick="submitPayment()">Submit Verification Details</button>
+        <div class="amount-box">
+            <p>Library Access Fee</p>
+            <div class="amount">MK500</div>
+            <small>Access period: 5 days after successful payment</small>
         </div>
 
-    </div>
+        <div class="payment-note">
+           
+        </div>
+
+        <button id="payButton" disabled>
+            Loading student details...
+        </button>
+
+        <div id="message" role="status" aria-live="polite"></div>
+
+    </section>
 </main>
 
 <footer>
-    <p>© 2026 DEXTER-LIBRARY | Developed by Dexter</p>
+    © 2026 DEXTER-LIBRARY | Developed by Dexter
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -203,123 +310,294 @@
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyASE0IKRHGqjHdxOxBovD4n5FqDm_KAukA",
-  authDomain: "nalikule-college-books.firebaseapp.com",
-  projectId: "nalikule-college-books",
-  storageBucket: "nalikule-college-books.appspot.com",
-  messagingSenderId: "726295406083",
-  appId: "1:726295406083:web:d0b732575478cbf66a1036"
+    apiKey: "AIzaSyASE0IKRHGqjHdxOxBovD4n5FqDm_KAukA",
+    authDomain: "nalikule-college-books.firebaseapp.com",
+    projectId: "nalikule-college-books",
+    storageBucket: "nalikule-college-books.appspot.com",
+    messagingSenderId: "726295406083",
+    appId: "1:726295406083:web:d0b732575478cbf66a1036"
 };
 
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+
 const auth = firebase.auth();
+const db = firebase.firestore();
 
-auth.onAuthStateChanged((user) => {
-    if (!user) {
-        alert("Please log in first.");
-        window.location.href = "index.html"; 
-        return;
-    }
+const API_URL = "https://library-api-el4r.onrender.com";
 
-    // Step 1: Fetch details of logged-in student
-    db.collection("students").doc(user.uid).get()
-    .then((studentDoc) => {
-        if (!studentDoc.exists) {
-            hideLoading();
-            return null;
-        }
+let currentUser = null;
+let studentDetails = null;
 
-        let regNo = studentDoc.data().regNumber;
-        document.getElementById("name").value = `${studentDoc.data().firstName || ''} ${studentDoc.data().lastName || ''}`;
-        document.getElementById("regNumber").value = regNo;
-
-        // Step 2: Grab the most recently submitted payment log
-        return db.collection("payments")
-            .where("regNumber", "==", regNo)
-            .orderBy("createdAt", "desc")
-            .limit(1)
-            .get();
-    })
-    .then((paymentQuery) => {
-        if (paymentQuery && !paymentQuery.empty) {
-            let payData = paymentQuery.docs[0].data();
-            let currentTime = new Date().getTime();
-
-            // 1. STATUS IS APPROVED
-            if (payData.status === "approved") {
-                let approvedTime = payData.approvedAt ? payData.approvedAt.toDate().getTime() : currentTime;
-                let fortyEightHours = 48 * 60 * 60 * 1000;
-
-                if (currentTime - approvedTime < fortyEightHours) {
-                    window.location.href = "materials.html";
-                    return; // Keeps loader running up until transition redirects
-                }
-            }
-            // 2. STATUS IS PENDING (GRANT A 1.5 HOUR GRACE WINDOW)
-            else if (payData.status === "pending") {
-                if (payData.createdAt) {
-                    let createdTime = payData.createdAt.toDate().getTime();
-                    let oneAndHalfHours = 1.5 * 60 * 60 * 1000; // 90 minutes in ms
-
-                    if (currentTime - createdTime < oneAndHalfHours) {
-                        window.location.href = "materials.html";
-                        return; // Bypasses dashboard view during grace timeframe
-                    }
-                }
-            }
-            // 3. STATUS IS REJECTED
-            else if (payData.status === "rejected") {
-                console.log("Prior verification attempt rejected.");
-            }
-        }
-        hideLoading();
-    })
-    .catch((err) => {
-        console.error("Error during execution checklist check: ", err);
-        hideLoading();
-    });
-});
+const loadingScreen = document.getElementById("loadingScreen");
+const payButton = document.getElementById("payButton");
+const messageBox = document.getElementById("message");
 
 function hideLoading() {
-    document.getElementById("loadingScreen").style.display = "none";
+    loadingScreen.style.display = "none";
 }
 
-function submitPayment() {
-    let name = document.getElementById("name").value.trim();
-    let regNumber = document.getElementById("regNumber").value.trim();
-    let transactionId = document.getElementById("transactionId").value.trim().toUpperCase();
+function showMessage(message, type = "info") {
+    messageBox.className = type;
+    messageBox.textContent = message;
+}
 
-    if (!name || !regNumber || !transactionId) {
-        alert("Please fill all fields completely");
-        return;
+function showAccessRemaining(expiryTime) {
+    const remaining = expiryTime - Date.now();
+
+    if (remaining <= 0) {
+        return false;
     }
 
-    const docRef = db.collection("payments").doc(transactionId);
+    const hours = Math.ceil(remaining / (60 * 60 * 1000));
+    const days = Math.floor(hours / 24);
+    const remainingHours = hours % 24;
 
-    docRef.get().then((doc) => {
-        if (doc.exists) {
-            alert("❌ This Transaction Reference Key has already been captured.");
+    let text = "";
+
+    if (days > 0) {
+        text = days + " day(s) and " + remainingHours + " hour(s)";
+    } else {
+        text = hours + " hour(s)";
+    }
+
+    showMessage(
+        "Your library payment is active. Remaining access: " +
+        text + ". Opening your materials...",
+        "success"
+    );
+
+    return true;
+}
+
+function timestampToMilliseconds(value) {
+    if (!value) return 0;
+
+    if (typeof value.toMillis === "function") {
+        return value.toMillis();
+    }
+
+    if (typeof value.toDate === "function") {
+        return value.toDate().getTime();
+    }
+
+    if (typeof value === "number") {
+        return value;
+    }
+
+    const date = new Date(value);
+
+    return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+}
+
+async function checkExistingAccess(user) {
+    /*
+      Access must be based on verified PAID records.
+      The backend should save paidAt when PayChangu confirms payment.
+    */
+
+    const snapshot = await db.collection("payments")
+        .where("studentId", "==", user.uid)
+        .get();
+
+    const now = Date.now();
+    let latestExpiry = 0;
+
+    snapshot.forEach(doc => {
+        const payment = doc.data();
+
+        if (String(payment.status || "").toUpperCase() !== "PAID") {
             return;
         }
 
-        docRef.set({
-            name: name,
-            regNumber: regNumber,
-            transactionId: transactionId,
-            status: "pending",
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            approvedAt: null
-        })
-        .then(() => {
-            alert("✅ Payment submitted! Entering temporary 1.5-hour grace window...");
-            window.location.href = "materials.html";
-        })
-        .catch((err) => {
-            alert("Submission error: " + err.message);
-        });
+        const paidAt = timestampToMilliseconds(payment.paidAt);
+
+        if (!paidAt) {
+            return;
+        }
+
+        const expiry = paidAt + (5 * 24 * 60 * 60 * 1000);
+
+        if (expiry > now && expiry > latestExpiry) {
+            latestExpiry = expiry;
+        }
     });
+
+    if (latestExpiry > now) {
+        showAccessRemaining(latestExpiry);
+
+        setTimeout(() => {
+            window.location.replace("materials.html");
+        }, 1800);
+
+        return true;
+    }
+
+    return false;
 }
+
+auth.onAuthStateChanged(async user => {
+    if (!user) {
+        alert("Please log in before making a payment.");
+        window.location.replace("index.html");
+        return;
+    }
+
+    currentUser = user;
+
+    try {
+        const studentDoc = await db.collection("students")
+            .doc(user.uid)
+            .get();
+
+        if (!studentDoc.exists) {
+            hideLoading();
+
+            showMessage(
+                "Your student profile could not be found. Please contact the library administrator.",
+                "error"
+            );
+
+            payButton.disabled = true;
+            payButton.textContent = "Student Profile Not Found";
+            return;
+        }
+
+        const student = studentDoc.data();
+
+        studentDetails = {
+            uid: user.uid,
+            firstName: student.firstName || "",
+            lastName: student.lastName || "",
+            regNumber: student.regNumber || "",
+            email: user.email || student.email || ""
+        };
+
+        document.getElementById("studentName").textContent =
+            (studentDetails.firstName + " " + studentDetails.lastName).trim()
+            || "Not provided";
+
+        document.getElementById("studentReg").textContent =
+            studentDetails.regNumber || "Not provided";
+
+        document.getElementById("studentEmail").textContent =
+            studentDetails.email || "Not provided";
+
+        if (!studentDetails.regNumber || !studentDetails.email) {
+            hideLoading();
+
+            showMessage(
+                "Your registration number or email is missing. Please contact the administrator before paying.",
+                "error"
+            );
+
+            payButton.disabled = true;
+            payButton.textContent = "Student Details Incomplete";
+            return;
+        }
+
+        const hasAccess = await checkExistingAccess(user);
+
+        if (hasAccess) {
+            payButton.disabled = true;
+            payButton.textContent = "Access Already Active";
+            hideLoading();
+            return;
+        }
+
+        payButton.disabled = false;
+        payButton.textContent = "Pay Now — MK500";
+
+        hideLoading();
+
+    } catch (error) {
+        console.error("Student account check failed:", error);
+
+        hideLoading();
+
+        showMessage(
+            "We could not load your student account or payment records. Check your internet connection and try again.",
+            "error"
+        );
+
+        payButton.disabled = true;
+        payButton.textContent = "Unable to Load Account";
+    }
+});
+
+payButton.addEventListener("click", async () => {
+    if (!currentUser || !studentDetails) {
+        showMessage("Please sign in again before making a payment.", "error");
+        return;
+    }
+
+    payButton.disabled = true;
+    payButton.textContent = "Connecting to PayChangu...";
+
+    showMessage("Preparing your secure payment. Please wait.", "info");
+
+    try {
+        const idToken = await currentUser.getIdToken();
+
+        const response = await fetch(API_URL + "/api/create-checkout", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + idToken
+            },
+            body: JSON.stringify({})
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || result.success === false) {
+            throw new Error(
+                result.message ||
+                result.error ||
+                "The payment request could not be created."
+            );
+        }
+
+        /*
+          Accept common checkout URL response formats.
+          The exact field depends on the deployed backend.
+        */
+
+        const checkoutUrl =
+            result.checkoutUrl ||
+            result.checkout_url ||
+            result.data?.checkout_url ||
+            result.data?.checkoutUrl ||
+            result.data?.data?.checkout_url;
+
+        if (!checkoutUrl) {
+            console.error("Unexpected checkout response:", result);
+
+            throw new Error(
+                "The API did not return a PayChangu checkout URL. Please contact the administrator."
+            );
+        }
+
+        if (!/^https:\/\/(pay\.paychangu\.com|checkout\.paychangu\.com|api\.paychangu\.com)(\/|$)/i.test(checkoutUrl)) {
+            throw new Error(
+                "The API returned an unexpected payment address. Payment was not started."
+            );
+        }
+
+        window.location.assign(checkoutUrl);
+
+    } catch (error) {
+        console.error("Checkout error:", error);
+
+        showMessage(
+            error.message ||
+            "Unable to connect to the payment service. Please try again.",
+            "error"
+        );
+
+        payButton.disabled = false;
+        payButton.textContent = "Try Again — MK500";
+    }
+});
 </script>
 
 </body>
