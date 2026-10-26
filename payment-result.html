@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Verifying Payment | DEXTER-LIBRARY</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f6fa;
+    color: #253247;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+    width: 100%;
+    max-width: 440px;
+    padding: 28px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px rgba(20, 40, 70, 0.08);
+    text-align: center;
+}
+
+h2 {
+    color: #123b66;
+    font-size: 22px;
+    margin-top: 0;
+}
+
+p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #64748b;
+}
+
+button {
+    display: none;
+    width: 100%;
+    padding: 13px;
+    border: 0;
+    border-radius: 7px;
+    background: #123b66;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2 id="heading">Verifying Your Payment</h2>
+
+    <p id="message">
+        Please wait while we confirm your transaction with PayChangu.
+        Do not close this page.
+    </p>
+
+    <button id="continueButton" onclick="goToPayment()">
+        Return to Payment Portal
+    </button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyASE0IKRHGqjHdxOxBovD4n5FqDm_KAukA",
+    authDomain: "nalikule-college-books.firebaseapp.com",
+    projectId: "nalikule-college-books",
+    storageBucket: "nalikule-college-books.appspot.com",
+    messagingSenderId: "726295406083",
+    appId: "1:726295406083:web:d0b732575478cbf66a1036"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+
+const API_URL = "https://library-api-el4r.onrender.com";
+
+const heading = document.getElementById("heading");
+const message = document.getElementById("message");
+const continueButton = document.getElementById("continueButton");
+
+function goToPayment() {
+    window.location.replace("payment.html");
+}
+
+function showFailure(title, description) {
+    heading.textContent = title;
+    message.textContent = description;
+    continueButton.style.display = "block";
+}
+
+async function verifyPayment(user) {
+    const params = new URLSearchParams(window.location.search);
+
+    /*
+      The checkout reference is normally returned as tx_ref.
+      Some integrations use txRef instead.
+    */
+
+    const txRef = params.get("tx_ref") || params.get("txRef");
+
+    if (!txRef) {
+        showFailure(
+            "Transaction Reference Missing",
+            "We could not find your transaction reference. If money was deducted, do not pay again immediately. Contact the administrator to check your transaction."
+        );
+        return;
+    }
+
+    try {
+        const idToken = await user.getIdToken();
+
+        const response = await fetch(
+            API_URL + "/api/verify/" + encodeURIComponent(txRef),
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + idToken
+                }
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.message ||
+                result.error ||
+                "The transaction could not be verified."
+            );
+        }
+
+        /*
+          The backend must confirm the transaction with PayChangu
+          and return a verified payment status.
+        */
+
+        const verifiedStatus = String(
+            result.status ||
+            result.payment?.status ||
+            result.data?.status ||
+            ""
+        ).toUpperCase();
+
+        const success =
+            result.success === true &&
+            (
+                verifiedStatus === "PAID" ||
+                verifiedStatus === "SUCCESSFUL" ||
+                verifiedStatus === "SUCCESS"
+            );
+
+        if (!success) {
+            showFailure(
+                "Payment Not Yet Confirmed",
+                "PayChangu has not confirmed a successful payment. Your library access has not been activated. If you completed payment, wait briefly and contact the administrator if the problem continues."
+            );
+            return;
+        }
+
+        heading.textContent = "Payment Verified Successfully";
+
+        message.textContent =
+            "Your payment has been verified. We are opening your library materials.";
+
+        setTimeout(() => {
+            window.location.replace("materials.html");
+        }, 1800);
+
+    } catch (error) {
+        console.error("Payment verification failed:", error);
+
+        showFailure(
+            "Unable to Verify Payment",
+            error.message ||
+            "We could not contact the payment verification service. If money was deducted, contact the administrator before trying to pay again."
+        );
+    }
+}
+
+auth.onAuthStateChanged(user => {
+    if (!user) {
+        showFailure(
+            "Please Sign In Again",
+            "Your payment verification requires your student account. Please sign in and check your payment status before making another payment."
+        );
+
+        return;
+    }
+
+    verifyPayment(user);
+});
+</script>
+
+</body>
+</html>
